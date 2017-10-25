@@ -1,33 +1,24 @@
+const cssRules = `
+#uncommon-tooltip {all: initial}
+#uncommon-tooltip * {all: unset}
+
+#uncommon-tooltip {background-color: white; padding: 10px; border: 1px solid black; pointer-events: none; position: absolute; display: none}
+`;
+
+const pointerOffset = 16; // px
 
 var currentLink = null;
 var linkResolver = () => { return Promise.resolve(document.createTextNode('error: no resolver')); };
 
 var div = document.createElement('div');
-
-div.style.backgroundColor = 'white';
-div.style.padding = '10px';
-div.style.border = '1px solid black';
-
-div.style.pointerEvents = 'none';
-div.style.position = 'absolute';
-div.style.display = 'none';
-
-var loaded = false;
-window.addEventListener('load', function() { loaded = true; });
+div.id = 'uncommon-tooltip';
 
 exports.init = function() {
-    if (loaded) {
-        setup();
-    } else {
-        window.addEventListener('load', setup);
-    }
-};
-
-function setup() {
+    addCss(cssRules);
     document.body.appendChild(div);
     window.addEventListener('mouseover', mouseOver);
     window.addEventListener('mousemove', updatePosition);
-}
+};
 
 function mouseOver(evt) {
     if (evt.target == div) {
@@ -93,8 +84,8 @@ function updatePosition(evt) {
         return;
     }
 
-    div.style.top = '' + (evt.clientY + 1) + 'px';
-    div.style.left = '' + (evt.clientX + 1) + 'px';
+    div.style.top = '' + (evt.clientY + pointerOffset) + 'px';
+    div.style.left = '' + (evt.clientX + pointerOffset) + 'px';
 }
 
 exports.getCurrentLink = function() {
@@ -104,3 +95,15 @@ exports.getCurrentLink = function() {
 exports.setLinkResolver = function(f) {
     return linkResolver = f;
 };
+
+function addCss(css){
+    var head = document.getElementsByTagName('head')[0];
+    var s = document.createElement('style');
+    s.setAttribute('type', 'text/css');
+    if (s.styleSheet) {   // IE
+        s.styleSheet.cssText = css;
+    } else {                // the world
+        s.appendChild(document.createTextNode(css));
+    }
+    head.appendChild(s);
+}

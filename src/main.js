@@ -1,5 +1,6 @@
 const BNet = require('./battlenet');
 const Tooltip = require('./tooltip');
+const Locales = require('./locales');
 
 const wait = function(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms) })};
 
@@ -64,9 +65,10 @@ Tooltip.setLinkResolver(function(a) {
     }
     paramWalk.call(details, rel);
 
-    if (details.domain) {
-        details.locale = domainToLocale[details.domain.toLowerCase()] || 'en_US';
+    if (!details.domain) {
+        details.domain = 'www';
     }
+    details.locale = domainToLocale[details.domain.toLowerCase()] || 'en_US';
 
     if (details.type == 'item') {
         return getItem(details);
@@ -80,12 +82,31 @@ function getItem(details) {
 }
 
 function buildItemTooltip(details, json) {
-    return document.createTextNode(details.id + ': ' + json.name);
+    Locales.setLocale(details.locale);
+    var l = Locales.dictionary();
+
+    return document.createTextNode(details.id + ': ' + json.name + ' - ' + l.itemlevel);
+}
+
+var ranSetup = false;
+
+function setupAfterLoad() {
+    if (ranSetup) {
+        return;
+    }
+    ranSetup = true;
+
+    Tooltip.init();
 }
 
 window.uncommonTooltips = {
     init: function(key) {
         BNet.SetKey(key);
-        Tooltip.init();
+
+        if (document.readyState === "interactive" || document.readyState === "complete") {
+            setupAfterLoad();
+        } else {
+            window.addEventListener('load', setupAfterLoad);
+        }
     }
 };
