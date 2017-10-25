@@ -4,6 +4,8 @@ const Locales = require('./locales');
 
 const wait = function(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms) })};
 
+const IconPath = 'https://render-us.worldofwarcraft.com/icons/56/';
+
 const domainToLocale = {
     'www': 'en_US',
     'de': 'de_DE',
@@ -85,11 +87,33 @@ function buildItemTooltip(details, json) {
     Locales.setLocale(details.locale);
     var l = Locales.dictionary();
 
-    return document.createTextNode(details.id + ': ' + json.name + ' - ' + l.itemlevel);
+    console.log(json);
+
+    var top = document.createElement('div');
+    top.appendChild(makeSpan(json.name, 'line name q' + json.quality));
+
+    if (json.itemLevel && [2,4].indexOf(json.itemClass) >= 0) {
+        top.appendChild(makeSpan(l.itemlevel + ' ' + json.itemLevel, 'line level'));
+    }
+
+    if (json.icon) {
+        var i = document.createElement('div');
+        i.className = 'icon';
+        i.style.backgroundImage = "url('" + IconPath + encodeURIComponent(json.icon) + ".jpg')";
+        top.appendChild(i);
+    }
+
+    return top;
+}
+
+function makeSpan(txt, cls) {
+    var s = document.createElement('span');
+    s.appendChild(document.createTextNode(txt));
+    s.className = cls;
+    return s;
 }
 
 var ranSetup = false;
-
 function setupAfterLoad() {
     if (ranSetup) {
         return;
