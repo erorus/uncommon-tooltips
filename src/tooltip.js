@@ -22,10 +22,10 @@ const cssRules = `
 #uncommon-tooltip .icon {
     position: absolute;
     top: -1px;
-    left: -5.166667em;
-    left: calc(-4.66667em - 7px);
-    width: 4.66667em;
-    height: 4.66667em;
+    left: -4em;
+    left: calc(-3.5em - 7px);
+    width: 3.5em;
+    height: 3.5em;
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -37,9 +37,11 @@ const cssRules = `
     border-radius: 4px;
 }
 
-#uncommon-tooltip .line { display: block }
+#uncommon-tooltip span { display: block }
+#uncommon-tooltip span span { display: inline }
 #uncommon-tooltip .name { font-size: 116.66667% }
-#uncommon-tooltip .level { color: #ffd100 }
+#uncommon-tooltip .right { float: right; margin-left: 4em }
+#uncommon-tooltip .nobr { white-space: nowrap }
 
 #uncommon-tooltip .q {color:#ffd100}
 #uncommon-tooltip .q0 {color:#9d9d9d}
@@ -52,6 +54,22 @@ const cssRules = `
 #uncommon-tooltip .q7 {color:#00ccff}
 #uncommon-tooltip .q8 {color:#00ccff}
 #uncommon-tooltip .q9 {color:#71d5ff}
+#uncommon-tooltip .blue {color:#66bbff}
+#uncommon-tooltip .level {color: #ffd100}
+
+#uncommon-tooltip .c1 {color:#c69b6d}
+#uncommon-tooltip .c2 {color:#f48cba}
+#uncommon-tooltip .c3 {color:#aad372}
+#uncommon-tooltip .c4 {color:#fff468}
+#uncommon-tooltip .c5 {color:#ffffff}
+#uncommon-tooltip .c6 {color:#c41e3b}
+#uncommon-tooltip .c7 {color:#2359ff}
+#uncommon-tooltip .c8 {color:#68ccef}
+#uncommon-tooltip .c9 {color:#9382c9}
+#uncommon-tooltip .c10 {color:#008467}
+#uncommon-tooltip .c11 {color:#ff7c0a}
+#uncommon-tooltip .c12 {color:#a330c9}
+
 `;
 
 const pointerOffset = 16; // px
