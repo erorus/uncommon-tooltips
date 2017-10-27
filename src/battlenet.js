@@ -9,7 +9,6 @@ const localeToDomain = {
     'pt_BR': 'us',
     'ru_RU': 'eu',
     'ko_KR': 'kr',
-    'zh_CN': 'tw',
 };
 
 var apiCache = {};
@@ -42,7 +41,11 @@ function APICall(locale, urlFragment) {
         return apiCache[fullUrl];
     }
 
-    return fetch(fullUrl).then(function(response){
+    return fetch(fullUrl, {
+        credentials: 'omit',
+        cache: 'force-cache',
+        mode: 'cors',
+    }).then(function(response){
         return apiCache[fullUrl] = response.json();
     });
 }

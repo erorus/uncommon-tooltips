@@ -42,6 +42,7 @@ const cssRules = `
 #uncommon-tooltip .name { font-size: 116.66667% }
 #uncommon-tooltip .right { float: right; margin-left: 4em }
 #uncommon-tooltip .nobr { white-space: nowrap }
+#uncommon-tooltip .itemset-items { margin-left: 0.5em; display: block }
 
 #uncommon-tooltip .q {color:#ffd100}
 #uncommon-tooltip .q0 {color:#9d9d9d}

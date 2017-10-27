@@ -18,7 +18,6 @@ const DomainToLocale = {
     'pt': 'pt_BR',
     'ru': 'ru_RU',
     'ko': 'ko_KR',
-    'cn': 'zh_CN',
 };
 
 const AcceptableTypes = ['item','npc'];
@@ -89,7 +88,36 @@ Tooltip.setLinkResolver(function(a) {
 });
 
 function getItem(details) {
-    return BNet.GetItem(details.locale, details.id).then(buildItemTooltip.bind(null, details));
+    return BNet.GetItem(details.locale, details.id).then(function(item) {
+        details.itemSetLookup = {};
+
+        var promises = [];
+        if (item.itemSet && item.itemSet.items) {
+            for (var x in item.itemSet.items) {
+                if (!item.itemSet.items.hasOwnProperty(x)) {
+                    continue;
+                }
+                if (item.itemSet.items[x] == item.id) {
+                    details.itemSetLookup[item.id] = item;
+                    continue;
+                }
+                promises.push(BNet.GetItem(details.locale, item.itemSet.items[x]));
+            }
+        }
+
+        return Promise.all(promises).then(function(responses) {
+            for (var x in responses) {
+                if (!responses.hasOwnProperty(x)) {
+                    continue;
+                }
+                if (!responses[x].hasOwnProperty('id')) {
+                    continue;
+                }
+                details.itemSetLookup[responses[x].id] = responses[x];
+            }
+            return buildItemTooltip(details, item);
+        })
+    });
 }
 
 function getSpecies(details) {
@@ -112,8 +140,6 @@ function formatNumber(locale, num, decimals) {
 function buildSpeciesTooltip(details, json) {
     Locales.setLocale(details.locale);
     var l = Locales.dictionary();
-
-    console.log(json);
 
     var s, x, y, top = document.createElement('div');
 
@@ -155,7 +181,7 @@ function buildItemTooltip(details, json) {
     var l = Locales.dictionary();
     var Format = formatNumber.bind(null, details.locale);
 
-    console.log(json);
+    console.log(details, json);
 
     var s, x, y, top = document.createElement('div');
 
@@ -173,8 +199,6 @@ function buildItemTooltip(details, json) {
     }
 
     top.appendChild(makeSpan(json.name, 'name q' + json.quality));
-
-    // todo: heroicTooltip(?)
 
     if (json.nameDescription) {
         s = makeSpan(json.nameDescription);
@@ -328,7 +352,13 @@ function buildItemTooltip(details, json) {
             s = makeSpan(false, 'q0');
             top.appendChild(s);
             s.appendChild(Tooltip.createSocket(y));
-            s.appendChild(document.createTextNode((l.socketMap.hasOwnProperty(y) ? l.socketMap[y] : y) + ' ' + l.socket));
+            if (l.relicSlotMap.hasOwnProperty(y)) {
+                s.appendChild(document.createTextNode(l.relicSlotMap[y] + ' ' + l.relicSlot));
+            } else if (l.socketMap.hasOwnProperty(y)) {
+                s.appendChild(document.createTextNode(l.socketMap[y] + ' ' + l.socket));
+            } else {
+                s.appendChild(document.createTextNode(y));
+            }
             top.appendChild(s);
         }
 
@@ -410,7 +440,32 @@ function buildItemTooltip(details, json) {
         top.appendChild(makeSpan(l.craftingReagent, 'blue'));
     }
 
-    // todo: itemset
+    if (json.itemSet && json.itemSet.name) {
+        top.appendChild(document.createElement('br'));
+        top.appendChild(makeSpan(json.itemSet.name, 'q'));
+
+        s = document.createElement('div');
+        s.className = 'itemset-items q0';
+        top.appendChild(s);
+        for (x in json.itemSet.items) {
+            if (!json.itemSet.items.hasOwnProperty(x)
+                || !details.itemSetLookup.hasOwnProperty(json.itemSet.items[x])
+                || !details.itemSetLookup[json.itemSet.items[x]].name) {
+                continue;
+            }
+            s.appendChild(makeSpan(details.itemSetLookup[json.itemSet.items[x]].name));
+        }
+
+        if (json.itemSet.setBonuses) {
+            top.appendChild(document.createElement('br'));
+            for (x in json.itemSet.setBonuses) {
+                if (!json.itemSet.setBonuses.hasOwnProperty(x) || !json.itemSet.setBonuses[x].description) {
+                    continue;
+                }
+                top.appendChild(makeSpan('(' + json.itemSet.setBonuses[x].threshold + ') ' + l['set'] + ': ' + json.itemSet.setBonuses[x].description, 'q0'));
+            }
+        }
+    }
 
     return top;
 }

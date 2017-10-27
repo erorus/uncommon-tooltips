@@ -23,6 +23,8 @@ module.exports = {
     'mount': 'Mount',
     'battlePet': 'Battle Pet',
     'cannotBattle': 'This creature cannot battle.', // globalstrings BATTLE_PET_CANNOT_BATTLE
+    'set': 'Set', // itemset prompt
+    'relicSlot': 'Artifact Relic Slot', // globalstrings EMPTY_RELIC_TOOLTIP_TITLE
 
     'spellTriggerMap': {
         'ON_USE': 'Use',
@@ -32,6 +34,7 @@ module.exports = {
     },
 
     'socketMap': {
+        // globalstrings empty_socket
         'meta': 'Meta',
         'red': 'Red',
         'yellow': 'Yellow',
@@ -39,6 +42,20 @@ module.exports = {
         'hydraulic': 'Sha-Touched',
         'cogwheel': 'Cogwheel',
         'prismatic': 'Prismatic',
+    },
+    'relicSlotMap': {
+        // globalstrings relic_slot_type
+        'iron': 'Iron',
+        'blood': 'Blood',
+        'shadow': 'Shadow',
+        'fel': 'Fel',
+        'arcane': 'Arcane',
+        'frost': 'Frost',
+        'fire': 'Fire',
+        'water': 'Water',
+        'life': 'Life',
+        'wind': 'Storm',
+        'holy': 'Holy',
     },
 
     'itemBindMap': {
@@ -81,6 +98,7 @@ module.exports = {
         '17': 'Two-Hand',
         '18': 'Bag',
         '19': 'Tabard',
+        '20': 'Chest', // robe
         '21': 'Main Hand',
         '22': 'Off Hand',
         '23': 'Held In Off-hand',
@@ -163,7 +181,7 @@ module.exports = {
         32: "Critical Strike",
         33: "Hit Avoidance",
         34: "Critical Avoidance",
-        35: "Resilience",
+        35: "PvP Resilience",
         36: "Haste",
         37: "Expertise",
         38: "Attack Power",
@@ -185,7 +203,7 @@ module.exports = {
         54: "Shadow Resistance",
         55: "Nature Resistance",
         56: "Arcane Resistance",
-        57: "PVP Power",
+        57: "PvP Power",
         58: "Amplify",
         59: "Multistrike",
         60: "Readiness",
