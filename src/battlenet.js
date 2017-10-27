@@ -22,6 +22,9 @@ exports.GetItem = function(locale, id) {
     return APICall(locale, '/wow/item/' + id);
 };
 
+exports.GetSpecies = function(locale, id) {
+    return APICall(locale, '/wow/pet/species/' + id);
+};
 
 function APICall(locale, urlFragment) {
     if (!localeToDomain.hasOwnProperty(locale)) {

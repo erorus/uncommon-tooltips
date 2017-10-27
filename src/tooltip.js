@@ -55,6 +55,7 @@ const cssRules = `
 #uncommon-tooltip .q8 {color:#00ccff}
 #uncommon-tooltip .q9 {color:#71d5ff}
 #uncommon-tooltip .blue {color:#66bbff}
+#uncommon-tooltip .red {color:#ff4040}
 #uncommon-tooltip .level {color: #ffd100}
 
 #uncommon-tooltip .c1 {color:#c69b6d}
@@ -70,7 +71,38 @@ const cssRules = `
 #uncommon-tooltip .c11 {color:#ff7c0a}
 #uncommon-tooltip .c12 {color:#a330c9}
 
+#uncommon-tooltip .socket {
+    width: 0.9em; height: 0.9em;
+
+    border: 1px solid #444;
+    background-color: black;
+    position: relative;
+    display: inline-block;
+    vertical-align: text-top;
+    margin-right: 0.3em;
+    background-image: linear-gradient(45deg, black, #333 45%, #444, #333 55%, black);
+}
+#uncommon-tooltip .socket .corner { width: 0; height: 0; position: absolute; border: 0 solid #aaa; }
+#uncommon-tooltip .socket .corner.top { border-top-width: 0.3em; top: 0; }
+#uncommon-tooltip .socket .corner.bottom { border-bottom-width: 0.3em; bottom: 0; }
+#uncommon-tooltip .socket .corner.left { border-right-width: 0.3em; border-right-color: transparent !important; left: 0; }
+#uncommon-tooltip .socket .corner.right { border-left-width: 0.3em; border-left-color: transparent !important; right: 0; }
+
+#uncommon-tooltip .socket .middle { width: 0; height: 0; position: absolute; border: 0.25em solid transparent; }
+#uncommon-tooltip .socket .middle.top { left: calc(50% - 0.25em); top: 0; border-top: 0.25em solid #666; }
+#uncommon-tooltip .socket .middle.left { top: calc(50% - 0.25em); left: 0; border-left: 0.25em solid #666; }
+#uncommon-tooltip .socket .middle.bottom { left: calc(50% - 0.25em); bottom: 0; border-bottom: 0.25em solid #666; }
+#uncommon-tooltip .socket .middle.right { top: calc(50% - 0.25em); right: 0; border-right: 0.25em solid #666; }
+
+#uncommon-tooltip .socket.prismatic:after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: linear-gradient(135deg, rgba(192,0,0,0.25), rgba(0,192,0,0.25), rgba(192,0,192,0.25))}
+
 `;
+
+const SocketColors = {
+    // outside border, gradient step, gradient middle, corners, middles
+    'cogwheel': ['663','553','664','cca','776'],
+};
 
 const pointerOffset = 16; // px
 
@@ -81,7 +113,21 @@ var div = document.createElement('div');
 div.id = 'uncommon-tooltip';
 
 exports.init = function() {
-    addCss(cssRules);
+    var c, rules = cssRules;
+    var x, sides = ['top','left','bottom','right'];
+    for (var color in SocketColors) {
+        if (!SocketColors.hasOwnProperty(color)) {
+            continue;
+        }
+        c = SocketColors[color];
+        rules += '#uncommon-tooltip .socket.' + color + ' {border-color:#' + c[0] + ';background-image: linear-gradient(45deg, black, #' + c[1] + ' 45%, #' + c[2] + ', #' + c[1] + ' 55%, black)} ';
+        rules += '#uncommon-tooltip .socket.' + color + ' .corner {border-color:#' + c[3] + '} ';
+        for (x = 0; x < sides.length; x++) {
+            rules += '#uncommon-tooltip .socket.' + color + ' .middle.' + sides[x] + ' {border-' + sides[x] + '-color: #' + c[4] + '} ';
+        }
+    }
+    addCss(rules);
+
     document.body.appendChild(div);
     window.addEventListener('mouseover', mouseOver);
     window.addEventListener('mousemove', updatePosition);
@@ -162,6 +208,27 @@ exports.getCurrentLink = function() {
 exports.setLinkResolver = function(f) {
     return linkResolver = f;
 };
+
+function makeDivWithClass(cls) {
+    var d = document.createElement('div');
+    d.className = cls;
+    return d;
+}
+
+exports.createSocket = function(cls) {
+    var d = makeDivWithClass('socket' + (cls ? ' ' + cls : ''));
+
+    d.appendChild(makeDivWithClass('corner top left'));
+    d.appendChild(makeDivWithClass('corner top right'));
+    d.appendChild(makeDivWithClass('corner bottom left'));
+    d.appendChild(makeDivWithClass('corner bottom right'));
+    d.appendChild(makeDivWithClass('middle left'));
+    d.appendChild(makeDivWithClass('middle right'));
+    d.appendChild(makeDivWithClass('middle bottom'));
+    d.appendChild(makeDivWithClass('middle top'));
+
+    return d;
+}
 
 function addCss(css){
     var head = document.getElementsByTagName('head')[0];

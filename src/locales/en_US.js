@@ -13,10 +13,32 @@ module.exports = {
     'speed': 'Speed',
     'damagePerSecond': 'damage per second',
     'slot': 'Slot',
+    'charges': 'Charges',
+    'allResistances': 'to All Resistances', // globalstrings ITEM_RESIST_ALL
+    'alliance': 'Alliance',
+    'horde': 'Horde',
+    'only': 'Only',
+    'socket': 'Socket',
+    'socketBonus': 'Socket Bonus',
+    'mount': 'Mount',
+    'battlePet': 'Battle Pet',
+    'cannotBattle': 'This creature cannot battle.', // globalstrings BATTLE_PET_CANNOT_BATTLE
 
     'spellTriggerMap': {
-        'ON_USE': 'Use:',
-        'ON_EQUIP': 'Equip:',
+        'ON_USE': 'Use',
+        'ON_EQUIP': 'Equip',
+        'ON_LEARN': 'Teaches',
+        'ON_PICKUP': 'Pickup',
+    },
+
+    'socketMap': {
+        'meta': 'Meta',
+        'red': 'Red',
+        'yellow': 'Yellow',
+        'blue': 'Blue',
+        'hydraulic': 'Sha-Touched',
+        'cogwheel': 'Cogwheel',
+        'prismatic': 'Prismatic',
     },
 
     'itemBindMap': {
@@ -25,6 +47,19 @@ module.exports = {
         '3': 'Binds when used',
         '4': 'Quest Item',
         '5': 'Quest Item',
+    },
+
+    'petFamilyMap': {
+        "8": "Aquatic",
+        "7": "Beast",
+        "4": "Critter",
+        "1": "Dragonkin",
+        "6": "Elemental",
+        "2": "Flying",
+        "0": "Humanoid",
+        "5": "Magic",
+        "9": "Mechanical",
+        "3": "Undead"
     },
     'inventoryTypeMap': { // GlobalStrings INVTYPE_*
         '1': 'Head',
