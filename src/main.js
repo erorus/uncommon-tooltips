@@ -194,7 +194,19 @@ function buildItemTooltip(details, json) {
         top.appendChild(i);
     }
 
-    top.appendChild(makeSpan(json.name, 'name q' + json.quality));
+    var name = json.name;
+    if (details.rand) {
+        if (details.rand < 0) {
+            if (l.itemRandomSuffixMap.hasOwnProperty(details.rand * -1)) {
+                name += ' ' + l.itemRandomSuffixMap[details.rand * -1];
+            }
+        } else {
+            if (l.itemEnchantMap.hasOwnProperty(details.rand)) {
+                name += ' ' + l.itemEnchantMap[details.rand];
+            }
+        }
+    }
+    top.appendChild(makeSpan(name, 'name q' + json.quality));
 
     if (json.nameDescription) {
         s = makeSpan(json.nameDescription);

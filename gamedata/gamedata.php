@@ -127,7 +127,7 @@ function buildKeyValue($db2Path, $db2File, $keyIndex, $valueIndex) {
     try {
         $reader = new Reader($db2Path.$db2File);
     } catch (\Exception $e) {
-        fwrite(STDERR, "Gamedata error: " . $e->getMessage(), "\n");
+        fwrite(STDERR, "Gamedata error: " . $e->getMessage() . "\n");
         return false;
     }
 

@@ -192,41 +192,24 @@ function main() {
 
     $json = [];
 
-    $partial = getGlobalStrings($db2Path);
-    if (!$partial) {
-        return 1;
-    }
-    $json = array_merge($json, $partial);
+    $parts = [
+        'getGlobalStrings',
+        'getInventorySubtype',
+        'getCharClasses',
+        'getCharRaces',
+        'getSkills',
+        'getFactions',
+        'getItemRandomSuffix',
+        'getItemEnchant',
+    ];
 
-    $partial = getInventorySubtype($db2Path);
-    if (!$partial) {
-        return 1;
+    foreach ($parts as $part) {
+        $partial = call_user_func($part, $db2Path);
+        if (!$partial) {
+            return 1;
+        }
+        $json = array_merge($json, $partial);
     }
-    $json = array_merge($json, $partial);
-
-    $partial = getCharClasses($db2Path);
-    if (!$partial) {
-        return 1;
-    }
-    $json = array_merge($json, $partial);
-
-    $partial = getCharRaces($db2Path);
-    if (!$partial) {
-        return 1;
-    }
-    $json = array_merge($json, $partial);
-
-    $partial = getSkills($db2Path);
-    if (!$partial) {
-        return 1;
-    }
-    $json = array_merge($json, $partial);
-
-    $partial = getFactions($db2Path);
-    if (!$partial) {
-        return 1;
-    }
-    $json = array_merge($json, $partial);
 
     echo 'module.exports=', json_encode($json, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT), ";";
 
@@ -352,25 +335,7 @@ function getInventorySubtype($db2Path) {
 }
 
 function getCharClasses($db2Path) {
-    $json = [];
-
-    try {
-        $reader = new Reader($db2Path . 'ChrClasses.db2');
-    } catch (\Exception $e) {
-        fwrite(STDERR, "Locales error: " . $e->getMessage() . "\n");
-        return false;
-    }
-    $reader->setFieldNames([
-        1 => 'name',
-    ]);
-
-    foreach ($reader->generateRecords() as $id => $record) {
-        $json[$id] = $record['name'];
-    }
-
-    ksort($json);
-
-    return ['classMap' => $json];
+    return genericNameLookup($db2Path, 'ChrClasses.db2', 1, 'classMap');
 }
 
 function getCharRaces($db2Path) {
@@ -449,6 +414,32 @@ function getFactions($db2Path) {
     ksort($json);
 
     return ['factionMap' => $json];
+}
+
+function getItemRandomSuffix($db2Path) {
+    return genericNameLookup($db2Path, 'ItemRandomSuffix.db2', 0, 'itemRandomSuffixMap');
+}
+
+function getItemEnchant($db2Path) {
+    return genericNameLookup($db2Path, 'ItemRandomProperties.db2', 0, 'itemEnchantMap');
+}
+
+function genericNameLookup($db2Path, $db2File, $nameField, $arrayKey) {
+    $json = [];
+
+    try {
+        $reader = new Reader($db2Path . $db2File);
+    } catch (\Exception $e) {
+        fwrite(STDERR, "Locales error: " . $e->getMessage() . "\n");
+        return false;
+    }
+    foreach ($reader->generateRecords() as $id => $record) {
+        $json[$id] = $record[$nameField];
+    }
+
+    ksort($json);
+
+    return [$arrayKey => $json];
 }
 
 exit(main());
