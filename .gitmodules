@@ -1,0 +1,3 @@
+[submodule "gamedata/db2"]
+	path = gamedata/db2
+	url = https://github.com/erorus/db2.git
