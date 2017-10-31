@@ -17,12 +17,21 @@ exports.SetKey = function(k) {
     key = k;
 };
 
-exports.GetItem = function(locale, id) {
-    return APICall(locale, '/wow/item/' + id);
+exports.GetItem = function(locale, id, params) {
+    var url = '/wow/item/' + parseInt(id,10);
+    for (var k in params) {
+        if (!params.hasOwnProperty(k)) {
+            continue;
+        }
+        url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+    }
+    url = url.replace(/&/, '?'); // replace first &
+
+    return APICall(locale, url);
 };
 
 exports.GetSpecies = function(locale, id) {
-    return APICall(locale, '/wow/pet/species/' + id);
+    return APICall(locale, '/wow/pet/species/' + parseInt(id, 10));
 };
 
 function APICall(locale, urlFragment) {

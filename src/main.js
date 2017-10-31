@@ -84,7 +84,11 @@ Tooltip.setLinkResolver(function(a) {
 });
 
 function getItem(details) {
-    return BNet.GetItem(details.locale, details.id).then(function(item) {
+    var params = {};
+    if (details.bonus && /^\d+(:\d+)*$/.test(details.bonus)) {
+        params.bl = details.bonus.replace(/:/g,',');
+    }
+    return BNet.GetItem(details.locale, details.id, params).then(function(item) {
         details.auxItems = {};
 
         var promises = [];
