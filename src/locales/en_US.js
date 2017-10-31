@@ -20,6 +20,7 @@ module.exports={
     "charges": "%d |4Charge:Charges;",
     "socketBonus": "Socket Bonus: %s",
     "enchanted": "Enchanted: %s",
+    "itemSetName": "%s (%d/%d)",
     "classes": "Classes: %s",
     "races": "Races: %s",
     "itemSetBonus": "(%d) Set: %s",

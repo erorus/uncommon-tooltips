@@ -59,6 +59,7 @@ const cssRules = `
 #uncommon-tooltip .blue {color:#66bbff}
 #uncommon-tooltip .red {color:#ff4040}
 #uncommon-tooltip .level {color: #ffd100}
+#uncommon-tooltip .lit {color: #ffff98}
 
 #uncommon-tooltip .c1 {color:#c69b6d}
 #uncommon-tooltip .c2 {color:#f48cba}

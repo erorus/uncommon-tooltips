@@ -430,10 +430,20 @@ function buildItemTooltip(details, json) {
     if (json.itemSet && json.itemSet.name) {
         top.appendChild(document.createElement('br')); // even if we already added one, this is a new section for itself
         addedBlank = true;
-        top.appendChild(makeSpan(json.itemSet.name, 'q'));
+
+        var nameSpan = makeSpan(false, 'q');
+        top.appendChild(nameSpan);
+
+        var pieces = {}, pieceCount = 0;
+        if (details.pcs) {
+            y = details.pcs.split(':');
+            for (x = 0; x < y.length; x++) {
+                pieces[y[x]] = true;
+            }
+        }
 
         s = document.createElement('div');
-        s.className = 'itemset-items q0';
+        s.className = 'itemset-items';
         top.appendChild(s);
         for (x in json.itemSet.items) {
             if (!json.itemSet.items.hasOwnProperty(x)
@@ -441,8 +451,13 @@ function buildItemTooltip(details, json) {
                 || !details.auxItems[json.itemSet.items[x]].name) {
                 continue;
             }
-            s.appendChild(makeSpan(details.auxItems[json.itemSet.items[x]].name));
+            if (pieces[json.itemSet.items[x]]) {
+                pieceCount++;
+            }
+            s.appendChild(makeSpan(details.auxItems[json.itemSet.items[x]].name, pieces.hasOwnProperty(json.itemSet.items[x]) ? 'lit' : 'q0'));
         }
+
+        nameSpan.appendChild(document.createTextNode(Locales.format(l.itemSetName, json.itemSet.name, pieceCount, json.itemSet.items.length)));
 
         if (json.itemSet.setBonuses && json.itemSet.setBonuses.length) {
             top.appendChild(document.createElement('br'));
@@ -450,7 +465,11 @@ function buildItemTooltip(details, json) {
                 if (!json.itemSet.setBonuses.hasOwnProperty(x) || !json.itemSet.setBonuses[x].description) {
                     continue;
                 }
-                top.appendChild(makeSpan(Locales.format(l.itemSetBonus, json.itemSet.setBonuses[x].threshold, json.itemSet.setBonuses[x].description), 'q0'));
+                top.appendChild(makeSpan(Locales.format(
+                    l.itemSetBonus,
+                    json.itemSet.setBonuses[x].threshold,
+                    json.itemSet.setBonuses[x].description),
+                    json.itemSet.setBonuses[x].threshold <= pieceCount ? 'q2' : 'q0'));
             }
         }
     }

@@ -49,6 +49,7 @@ $GlobalStringsTemplate = [
     'charges' => 'ITEM_SPELL_CHARGES', // %d |4Charge:Charges;
     'socketBonus' => 'ITEM_SOCKET_BONUS', // Socket Bonus: %s
     'enchanted' => 'ENCHANTED_TOOLTIP_LINE', // Enchanted: %s
+    'itemSetName' => 'ITEM_SET_NAME', // %s (%d/%d)
 
     'classes' => 'ITEM_CLASSES_ALLOWED', // Classes: %s
     'races' => 'ITEM_RACES_ALLOWED', // Races: %s
