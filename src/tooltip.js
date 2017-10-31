@@ -19,7 +19,7 @@ const cssRules = `
     display: none;
 }
 
-#uncommon-tooltip .icon {
+#uncommon-tooltip div.icon {
     position: absolute;
     top: -1px;
     left: -4em;
@@ -43,6 +43,7 @@ const cssRules = `
 #uncommon-tooltip .right { float: right; margin-left: 4em }
 #uncommon-tooltip .nobr { white-space: nowrap }
 #uncommon-tooltip .itemset-items { margin-left: 0.5em; display: block }
+#uncommon-tooltip .socket.icon { width: 1em; height: 1em; border-radius: 2px; }
 
 #uncommon-tooltip .q {color:#ffd100}
 #uncommon-tooltip .q0 {color:#9d9d9d}

@@ -20,7 +20,7 @@ const AcceptableTypes = ['item','npc'];
 
 function paramWalk(str) {
     var t = this;
-    var re = /\b([a-zA-Z0-9\.-]+)=([a-zA-Z0-9\.-]+)/g;
+    var re = /\b([a-zA-Z0-9\.-]+)=([a-zA-Z0-9\.:-]+)/g;
 
     var k, v;
 
@@ -85,7 +85,7 @@ Tooltip.setLinkResolver(function(a) {
 
 function getItem(details) {
     return BNet.GetItem(details.locale, details.id).then(function(item) {
-        details.itemSetLookup = {};
+        details.auxItems = {};
 
         var promises = [];
         if (item.itemSet && item.itemSet.items) {
@@ -94,10 +94,20 @@ function getItem(details) {
                     continue;
                 }
                 if (item.itemSet.items[x] == item.id) {
-                    details.itemSetLookup[item.id] = item;
+                    details.auxItems[item.id] = item;
                     continue;
                 }
                 promises.push(BNet.GetItem(details.locale, item.itemSet.items[x]));
+            }
+        }
+        if (details.gems) {
+            var gemIds = details.gems.split(':');
+            var seenGems = {};
+            for (var x = 0; x < gemIds.length; x++) {
+                if (gemIds[x] && !seenGems[gemIds[x]]) {
+                    seenGems[gemIds[x]] = true;
+                    promises.push(BNet.GetItem(details.locale, gemIds[x]));
+                }
             }
         }
 
@@ -109,7 +119,7 @@ function getItem(details) {
                 if (!responses[x].hasOwnProperty('id')) {
                     continue;
                 }
-                details.itemSetLookup[responses[x].id] = responses[x];
+                details.auxItems[responses[x].id] = responses[x];
             }
             return buildItemTooltip(details, item);
         })
@@ -305,33 +315,78 @@ function buildItemTooltip(details, json) {
     }
     //buildStats(getEnchantStats(details, json), 'q2');
 
-    if (json.socketInfo && json.socketInfo.sockets) {
+    var socketedGems = {};
+    var sortedSocketedSlots = [];
+    var hasSockets = (json.socketInfo && json.socketInfo.sockets);
+    if (details.gems) {
+        var gemIds = details.gems.split(':');
+        for (x = 0; x < gemIds.length; x++) {
+            if (!gemIds[x] || !details.auxItems[gemIds[x]]) {
+                continue;
+            }
+            socketedGems[x] = details.auxItems[gemIds[x]];
+            sortedSocketedSlots.push(x);
+        }
+    }
+
+    if (hasSockets || socketedGems) {
         if (!addedBlank) {
             addedBlank = true;
             top.appendChild(document.createElement('br'));
         }
-        for (x = 0; x < json.socketInfo.sockets.length; x++) {
-            y = json.socketInfo.sockets[x].type;
-            if (!y) {
+        var noSocketBonus = false;
+        for (x = 0; hasSockets && x < json.socketInfo.sockets.length; x++) {
+            if (socketedGems[x] && socketedGems[x].gemInfo && socketedGems[x].gemInfo.bonus && socketedGems[x].gemInfo.bonus.name) {
+                s = makeSpan(false);
+
+                y = document.createElement('img');
+                y.src = IconPath + socketedGems[x].icon + '.jpg';
+                y.className = 'socket icon';
+                s.appendChild(y);
+
+                s.appendChild(document.createTextNode(socketedGems[x].gemInfo.bonus.name));
+                top.appendChild(s);
+            } else {
+                noSocketBonus = true;
+                y = json.socketInfo.sockets[x].type;
+                if (!y) {
+                    continue;
+                }
+                y = y.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+                s = makeSpan(false, 'q0');
+                top.appendChild(s);
+                s.appendChild(Tooltip.createSocket(y));
+                if (l.relicSlotMap.hasOwnProperty(y)) {
+                    s.appendChild(document.createTextNode(Locales.format(l.relicSlot, l.relicSlotMap[y])));
+                } else if (l.socketMap.hasOwnProperty(y)) {
+                    s.appendChild(document.createTextNode(l.socketMap[y]));
+                } else {
+                    s.appendChild(document.createTextNode(y));
+                }
+                top.appendChild(s);
+            }
+        }
+        for (var z = 0; z < sortedSocketedSlots.length; z++) {
+            x = sortedSocketedSlots[z];
+            if (x < json.socketInfo.sockets.length) {
                 continue;
             }
-            y = y.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (socketedGems[x] && socketedGems[x].gemInfo && socketedGems[x].gemInfo.bonus && socketedGems[x].gemInfo.bonus.name) {
+                s = makeSpan(false);
 
-            s = makeSpan(false, 'q0');
-            top.appendChild(s);
-            s.appendChild(Tooltip.createSocket(y));
-            if (l.relicSlotMap.hasOwnProperty(y)) {
-                s.appendChild(document.createTextNode(Locales.format(l.relicSlot, l.relicSlotMap[y])));
-            } else if (l.socketMap.hasOwnProperty(y)) {
-                s.appendChild(document.createTextNode(l.socketMap[y]));
-            } else {
-                s.appendChild(document.createTextNode(y));
+                y = document.createElement('img');
+                y.src = IconPath + socketedGems[x].icon + '.jpg';
+                y.className = 'socket icon';
+                s.appendChild(y);
+
+                s.appendChild(document.createTextNode(socketedGems[x].gemInfo.bonus.name));
+                top.appendChild(s);
             }
-            top.appendChild(s);
         }
 
-        if (json.socketInfo.socketBonus) {
-            top.appendChild(makeSpan(Locales.format(l.socketBonus, json.socketInfo.socketBonus), 'q0'));
+        if (hasSockets && json.socketInfo.socketBonus) {
+            top.appendChild(makeSpan(Locales.format(l.socketBonus, json.socketInfo.socketBonus), noSocketBonus ? 'q0' : 'q2'));
         }
     }
 
@@ -382,11 +437,11 @@ function buildItemTooltip(details, json) {
         top.appendChild(s);
         for (x in json.itemSet.items) {
             if (!json.itemSet.items.hasOwnProperty(x)
-                || !details.itemSetLookup.hasOwnProperty(json.itemSet.items[x])
-                || !details.itemSetLookup[json.itemSet.items[x]].name) {
+                || !details.auxItems.hasOwnProperty(json.itemSet.items[x])
+                || !details.auxItems[json.itemSet.items[x]].name) {
                 continue;
             }
-            s.appendChild(makeSpan(details.itemSetLookup[json.itemSet.items[x]].name));
+            s.appendChild(makeSpan(details.auxItems[json.itemSet.items[x]].name));
         }
 
         if (json.itemSet.setBonuses && json.itemSet.setBonuses.length) {
