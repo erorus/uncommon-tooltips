@@ -329,6 +329,23 @@ function buildItemTooltip(details, json) {
         }
     }
 
+    var addSocketedGem = function(x) {
+        if (socketedGems[x] && socketedGems[x].gemInfo && socketedGems[x].gemInfo.bonus && socketedGems[x].gemInfo.bonus.name) {
+            var s = makeSpan(false);
+
+            var img = document.createElement('img');
+            img.src = IconPath + socketedGems[x].icon + '.jpg';
+            img.className = 'socket icon';
+            s.appendChild(img);
+
+            s.appendChild(document.createTextNode(socketedGems[x].gemInfo.bonus.name));
+            top.appendChild(s);
+
+            return true;
+        }
+        return false;
+    };
+
     if (hasSockets || socketedGems) {
         if (!addedBlank) {
             addedBlank = true;
@@ -336,17 +353,7 @@ function buildItemTooltip(details, json) {
         }
         var noSocketBonus = false;
         for (x = 0; hasSockets && x < json.socketInfo.sockets.length; x++) {
-            if (socketedGems[x] && socketedGems[x].gemInfo && socketedGems[x].gemInfo.bonus && socketedGems[x].gemInfo.bonus.name) {
-                s = makeSpan(false);
-
-                y = document.createElement('img');
-                y.src = IconPath + socketedGems[x].icon + '.jpg';
-                y.className = 'socket icon';
-                s.appendChild(y);
-
-                s.appendChild(document.createTextNode(socketedGems[x].gemInfo.bonus.name));
-                top.appendChild(s);
-            } else {
+            if (!addSocketedGem(x)) {
                 noSocketBonus = true;
                 y = json.socketInfo.sockets[x].type;
                 if (!y) {
@@ -372,17 +379,7 @@ function buildItemTooltip(details, json) {
             if (x < json.socketInfo.sockets.length) {
                 continue;
             }
-            if (socketedGems[x] && socketedGems[x].gemInfo && socketedGems[x].gemInfo.bonus && socketedGems[x].gemInfo.bonus.name) {
-                s = makeSpan(false);
-
-                y = document.createElement('img');
-                y.src = IconPath + socketedGems[x].icon + '.jpg';
-                y.className = 'socket icon';
-                s.appendChild(y);
-
-                s.appendChild(document.createTextNode(socketedGems[x].gemInfo.bonus.name));
-                top.appendChild(s);
-            }
+            addSocketedGem(x);
         }
 
         if (hasSockets && json.socketInfo.socketBonus) {
