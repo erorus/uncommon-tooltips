@@ -346,7 +346,7 @@ function buildItemTooltip(details, json) {
         return false;
     };
 
-    if (hasSockets || socketedGems) {
+    if (hasSockets || sortedSocketedSlots.length) {
         if (!addedBlank) {
             addedBlank = true;
             top.appendChild(document.createElement('br'));
