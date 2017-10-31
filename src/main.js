@@ -201,8 +201,8 @@ function buildItemTooltip(details, json) {
                 name += ' ' + l.itemRandomSuffixMap[details.rand * -1];
             }
         } else {
-            if (l.itemEnchantMap.hasOwnProperty(details.rand)) {
-                name += ' ' + l.itemEnchantMap[details.rand];
+            if (l.itemRandomPropertiesMap.hasOwnProperty(details.rand)) {
+                name += ' ' + l.itemRandomPropertiesMap[details.rand];
             }
         }
     }
@@ -289,32 +289,27 @@ function buildItemTooltip(details, json) {
         top.appendChild(makeSpan(formatNum(json.armor) + ' ' + l.armor));
     }
 
-    var statsSorted = sortItemStats(json.bonusStats);
+    var buildStats = statsSection.bind(null, formatNum, top);
 
-    var stat;
-    for (x = 0; x < statsSorted.stats.length; x++) {
-        for (y = 0; stat = statsSorted.stats[x][y]; y++) {
-            top.appendChild(makeSpan((stat.amount >= 0 ? '+' : '-') + formatNum(stat.amount) + ' ' + l.itemStatMap[stat.stat], x == 1 ? 'q2' : ''));
-        }
-    }
-    if (statsSorted.allResist) {
-        top.appendChild(makeSpan(Locales.format(l.resistAll, formatNum(statsSorted.allResist))));
-    }
+    buildStats(json.bonusStats);
+    buildStats(getRandEnchantStats(details, json), 'q2');
 
-    // todo: enchants
-    statsSorted = sortItemStats(getRandEnchantStats(details, json));
-    for (x = 0; x < statsSorted.stats.length; x++) {
-        for (y = 0; stat = statsSorted.stats[x][y]; y++) {
-            top.appendChild(makeSpan((stat.amount >= 0 ? '+' : '-') + formatNum(stat.amount) + ' ' + l.itemStatMap[stat.stat], 'q2'));
+    var addedBlank = false;
+
+    if (details.ench && l.enchantMap[details.ench]) {
+        if (!addedBlank) {
+            addedBlank = true;
+            top.appendChild(document.createElement('br'));
         }
+        top.appendChild(makeSpan(Locales.format(l.enchanted, l.enchantMap[details.ench]), 'q2'));
     }
-    if (statsSorted.allResist) {
-        top.appendChild(makeSpan((statsSorted.allResist >= 0 ? '+' : '-') + formatNum(statsSorted.allResist) + ' ' + l.allResistances, 'q2'));
-    }
+    //buildStats(getEnchantStats(details, json), 'q2');
 
     if (json.socketInfo && json.socketInfo.sockets) {
-        top.appendChild(document.createElement('br'));
-
+        if (!addedBlank) {
+            addedBlank = true;
+            top.appendChild(document.createElement('br'));
+        }
         for (x = 0; x < json.socketInfo.sockets.length; x++) {
             y = json.socketInfo.sockets[x].type;
             if (!y) {
@@ -338,11 +333,6 @@ function buildItemTooltip(details, json) {
         if (json.socketInfo.socketBonus) {
             top.appendChild(makeSpan(Locales.format(l.socketBonus, json.socketInfo.socketBonus), 'q0'));
         }
-        top.appendChild(document.createElement('br'));
-    }
-
-    if (json.maxDurability) {
-        top.appendChild(makeSpan(Locales.format(l.durability, json.maxDurability, json.maxDurability)));
     }
 
     if (json.itemSpells) {
@@ -368,6 +358,10 @@ function buildItemTooltip(details, json) {
             spellText += (l.spellTriggerMap.hasOwnProperty(json.itemSpells[x].trigger) ? l.spellTriggerMap[json.itemSpells[x].trigger] : (json.itemSpells[x].trigger + ':')) + ' ';
             spellText += json.itemSpells[x].spell.description;
 
+            if (!addedBlank) {
+                addedBlank = true;
+                top.appendChild(document.createElement('br'));
+            }
             top.appendChild(makeSpan(spellText, 'q2'));
 
             if (json.itemSpells[x].nCharges > 1) {
@@ -376,6 +370,43 @@ function buildItemTooltip(details, json) {
 
             // recipe reagents 24307 47654 - not in json
         }
+    }
+
+    if (json.itemSet && json.itemSet.name) {
+        top.appendChild(document.createElement('br')); // even if we already added one, this is a new section for itself
+        addedBlank = true;
+        top.appendChild(makeSpan(json.itemSet.name, 'q'));
+
+        s = document.createElement('div');
+        s.className = 'itemset-items q0';
+        top.appendChild(s);
+        for (x in json.itemSet.items) {
+            if (!json.itemSet.items.hasOwnProperty(x)
+                || !details.itemSetLookup.hasOwnProperty(json.itemSet.items[x])
+                || !details.itemSetLookup[json.itemSet.items[x]].name) {
+                continue;
+            }
+            s.appendChild(makeSpan(details.itemSetLookup[json.itemSet.items[x]].name));
+        }
+
+        if (json.itemSet.setBonuses && json.itemSet.setBonuses.length) {
+            top.appendChild(document.createElement('br'));
+            for (x in json.itemSet.setBonuses) {
+                if (!json.itemSet.setBonuses.hasOwnProperty(x) || !json.itemSet.setBonuses[x].description) {
+                    continue;
+                }
+                top.appendChild(makeSpan(Locales.format(l.itemSetBonus, json.itemSet.setBonuses[x].threshold, json.itemSet.setBonuses[x].description), 'q0'));
+            }
+        }
+    }
+
+    if (addedBlank) { // add trailing blank
+        top.appendChild(document.createElement('br'));
+        addedBlank = false;
+    }
+
+    if (json.maxDurability) {
+        top.appendChild(makeSpan(Locales.format(l.durability, json.maxDurability, json.maxDurability)));
     }
 
     if (json.allowableRaces && json.allowableRaces.length) {
@@ -413,33 +444,6 @@ function buildItemTooltip(details, json) {
         top.appendChild(makeSpan(l.craftingReagent, 'blue'));
     }
 
-    if (json.itemSet && json.itemSet.name) {
-        top.appendChild(document.createElement('br'));
-        top.appendChild(makeSpan(json.itemSet.name, 'q'));
-
-        s = document.createElement('div');
-        s.className = 'itemset-items q0';
-        top.appendChild(s);
-        for (x in json.itemSet.items) {
-            if (!json.itemSet.items.hasOwnProperty(x)
-                || !details.itemSetLookup.hasOwnProperty(json.itemSet.items[x])
-                || !details.itemSetLookup[json.itemSet.items[x]].name) {
-                continue;
-            }
-            s.appendChild(makeSpan(details.itemSetLookup[json.itemSet.items[x]].name));
-        }
-
-        if (json.itemSet.setBonuses) {
-            top.appendChild(document.createElement('br'));
-            for (x in json.itemSet.setBonuses) {
-                if (!json.itemSet.setBonuses.hasOwnProperty(x) || !json.itemSet.setBonuses[x].description) {
-                    continue;
-                }
-                top.appendChild(makeSpan(Locales.format(l.itemSetBonus, json.itemSet.setBonuses[x].threshold, json.itemSet.setBonuses[x].description), 'q0'));
-            }
-        }
-    }
-
     return top;
 }
 
@@ -450,6 +454,7 @@ function sortItemStats(bonusStats) {
         [56, 51, 55, 52, 54, 53],
     ];
     var x, y, statsLists = [[],[],[]];
+    var effects = [];
 
     var allResistWatch = {
         '56': 0,
@@ -460,12 +465,16 @@ function sortItemStats(bonusStats) {
     };
 
     for (y = 0; y < bonusStats.length; y++) {
+        if (!bonusStats[y].hasOwnProperty('stat')) {
+            effects.push(bonusStats[y]);
+            continue;
+        }
         if (allResistWatch.hasOwnProperty(bonusStats[y].stat)) {
             allResistWatch[bonusStats[y].stat] += bonusStats[y].amount;
         }
         statsLists[statsLists.length - 1].push(bonusStats[y]);
         for (x = 0; x < statsOrders.length; x++) {
-            if (statsOrders[x].indexOf(bonusStats[y].stat) >= 0) {
+            if (statsOrders[x].indexOf(parseInt(bonusStats[y].stat,10)) >= 0) {
                 statsLists[x].push(bonusStats[y]);
                 statsLists[statsLists.length - 1].pop();
                 break;
@@ -509,13 +518,15 @@ function sortItemStats(bonusStats) {
         statsLists[x].sort(statComparitor.bind(null, statsOrders[x]));
     }
 
-    return {stats: statsLists, allResist: allResistAmount};
+    return {stats: statsLists, allResist: allResistAmount, effects: effects};
 }
 
 function getRandEnchantStats(details, json) {
     if (!details.rand) {
         return [];
     }
+
+    var l = Locales.dictionary();
 
     var x, y, enchMap, enchId, stat, amount;
 
@@ -541,7 +552,9 @@ function getRandEnchantStats(details, json) {
         }
     }
 
-    var statList = {};
+    var enchIndex, statList = {};
+    var effectType, effectPoints;
+    var statArray = [];
 
     for (enchId in enchMap) {
         if (!enchMap.hasOwnProperty(enchId)) {
@@ -550,25 +563,33 @@ function getRandEnchantStats(details, json) {
         if (!GameData.itemEnchants.hasOwnProperty(enchId)) {
             continue;
         }
-        for (stat in GameData.itemEnchants[enchId]) {
-            if (!GameData.itemEnchants[enchId].hasOwnProperty(stat)) {
+        for (enchIndex in GameData.itemEnchants[enchId]) {
+            if (!GameData.itemEnchants[enchId].hasOwnProperty(enchIndex)) {
                 continue;
             }
-            if (enchMap[enchId] == 0) {
-                // use baked-in amount
-                amount = GameData.itemEnchants[enchId][stat];
+            effectType = GameData.itemEnchants[enchId][enchIndex][0];
+            stat = GameData.itemEnchants[enchId][enchIndex][1];
+            effectPoints = GameData.itemEnchants[enchId][enchIndex][2];
+
+            if (effectType == 5) {
+                if (enchMap[enchId] == 0) {
+                    // use baked-in amount
+                    amount = effectPoints;
+                } else {
+                    // use random prop points
+                    amount = getRandomPropPoints(json.itemLevel, json.quality, json.inventoryType, json.itemSubClass) * enchMap[enchId] / 10000;
+                }
+                if (!statList.hasOwnProperty(stat)) {
+                    statList[stat] = 0;
+                }
+                statList[stat] += amount;
             } else {
-                // use random prop points
-                amount = getRandomPropPoints(json.itemLevel, json.quality, json.inventoryType, json.itemSubClass) * enchMap[enchId] / 10000;
+                statArray.push(l.enchantMap[enchId]);
+                break;
             }
-            if (!statList.hasOwnProperty(stat)) {
-                statList[stat] = 0;
-            }
-            statList[stat] += amount;
         }
     }
 
-    var statArray = [];
     for (stat in statList) {
         if (!statList.hasOwnProperty(stat)) {
             continue;
@@ -580,6 +601,27 @@ function getRandEnchantStats(details, json) {
     }
 
     return statArray;
+}
+
+function statsSection(formatNum, top, statOutput, defaultClass) {
+    var l = Locales.dictionary();
+    var x, y, stat;
+    if (!defaultClass) {
+        defaultClass = '';
+    }
+    var statsSorted = sortItemStats(statOutput);
+
+    for (x = 0; x < statsSorted.stats.length; x++) {
+        for (y = 0; stat = statsSorted.stats[x][y]; y++) {
+            top.appendChild(makeSpan((stat.amount >= 0 ? '+' : '-') + formatNum(stat.amount) + ' ' + l.itemStatMap[stat.stat], x == 1 ? 'q2' : defaultClass));
+        }
+    }
+    if (statsSorted.allResist) {
+        top.appendChild(makeSpan((statsSorted.allResist >= 0 ? '+' : '-') + formatNum(statsSorted.allResist) + ' ' + l.allResistances, 'q2'));
+    }
+    for (x = 0; x < statsSorted.effects.length; x++) {
+        top.appendChild(makeSpan(statsSorted.effects[x], 'q2'));
+    }
 }
 
 function getRandomPropPoints(level, quality, inventoryType, subClass) {

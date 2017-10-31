@@ -48,6 +48,7 @@ $GlobalStringsTemplate = [
     'slotBag' => 'CONTAINER_SLOTS', // %d Slot %s
     'charges' => 'ITEM_SPELL_CHARGES', // %d |4Charge:Charges;
     'socketBonus' => 'ITEM_SOCKET_BONUS', // Socket Bonus: %s
+    'enchanted' => 'ENCHANTED_TOOLTIP_LINE', // Enchanted: %s
 
     'classes' => 'ITEM_CLASSES_ALLOWED', // Classes: %s
     'races' => 'ITEM_RACES_ALLOWED', // Races: %s
@@ -177,6 +178,8 @@ $GlobalStringsTemplate = [
 
 ];
 
+$SpellEffectBySpell = [];
+
 function main() {
     global $argv;
 
@@ -190,6 +193,10 @@ function main() {
         $db2Path .= '/';
     }
 
+    if (!initSpellEffect($db2Path)) {
+        return 1;
+    }
+
     $json = [];
 
     $parts = [
@@ -199,8 +206,9 @@ function main() {
         'getCharRaces',
         'getSkills',
         'getFactions',
+        'getItemEnchants',
         'getItemRandomSuffix',
-        'getItemEnchant',
+        'getItemRandomProperties',
     ];
 
     foreach ($parts as $part) {
@@ -214,6 +222,36 @@ function main() {
     echo 'module.exports=', json_encode($json, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT), ";";
 
     return 0;
+}
+
+function initSpellEffect($db2Path) {
+    global $SpellEffectBySpell;
+
+    $SpellEffectBySpell = [];
+
+    try {
+        $reader = new Reader($db2Path . 'SpellEffect.db2');
+    } catch (\Exception $e) {
+        fwrite(STDERR, "Locales error: " . $e->getMessage() . "\n");
+        return false;
+    }
+
+    $reader->setFieldsSigned([5 => true]);
+
+    $reader->setFieldNames([
+        2 => 'spell',
+        3 => 'effecttypeid',
+        5 => 'amount',
+        6 => 'order',
+        16 => 'diesides',
+        17 => 'itemcreated',
+    ]);
+
+    foreach ($reader->generateRecords() as $record) {
+        $SpellEffectBySpell[$record['spell']][$record['order']] = $record['amount'];
+    }
+
+    return true;
 }
 
 function getGlobalStrings($db2Path) {
@@ -314,7 +352,7 @@ function getInventorySubtype($db2Path) {
                 $includeRecord = in_array($record['subclass'], [0,1,2,3,4,5,6,7,8,10,13,15,16,18,19,20]);
                 break;
             case 4: // armor
-                $includeRecord = in_array($record['subclass'], [1,2,3,4]);
+                $includeRecord = in_array($record['subclass'], [1,2,3,4,5]);
                 break;
         }
         if ($includeRecord) {
@@ -420,8 +458,69 @@ function getItemRandomSuffix($db2Path) {
     return genericNameLookup($db2Path, 'ItemRandomSuffix.db2', 0, 'itemRandomSuffixMap');
 }
 
-function getItemEnchant($db2Path) {
-    return genericNameLookup($db2Path, 'ItemRandomProperties.db2', 0, 'itemEnchantMap');
+function getItemRandomProperties($db2Path) {
+    return genericNameLookup($db2Path, 'ItemRandomProperties.db2', 0, 'itemRandomPropertiesMap');
+}
+
+function getItemEnchants($db2Path) {
+    $json = [];
+
+    $record = [];
+    $id = 0;
+
+    $scalingTable = getGameTable($db2Path . '../GameTables/SpellScaling.txt');
+    if (!$scalingTable) {
+        return false;
+    }
+
+    $formatCallback = function($m) use (&$id, &$record, $scalingTable) {
+        global $SpellEffectBySpell;
+        static $seen = [];
+
+        switch ($m[2]) {
+            case 'k':
+                if ($record['scalingPoints'][$m[3]-1]) {
+                    $level = $record['maxLevel'] ?: 110;
+                    $amount = round($record['scalingPoints'][$m[3] - 1] * $scalingTable[$level][11 + abs($record['scalingClass'])]);
+                } else {
+                    $amount = $record['effectPoints'][$m[3] - 1];
+                }
+
+                return $amount;
+            case 's':
+                return abs($SpellEffectBySpell[$m[1]][$m[3]-1]);
+            default:
+                if (!isset($seen[$m[2]])) {
+                    $seen[$m[2]] = $m[0];
+                    fwrite(STDERR, sprintf("New enchant description operator in enchant %d: \"%s\" - %s\n", $id, $m[2], $m[0]));
+                }
+        }
+
+        return $m[0];
+    };
+
+    try {
+        $reader = new Reader($db2Path . 'SpellItemEnchantment.db2');
+    } catch (\Exception $e) {
+        fwrite(STDERR, "Locales error: " . $e->getMessage() . "\n");
+        return false;
+    }
+    $reader->setFieldNames([
+        0 => 'spell',
+        1 => 'name',
+        2 => 'scalingPoints',
+        5 => 'effectPoints',
+        15 => 'maxLevel',
+        16 => 'scalingClass',
+    ]);
+    $reader->setFieldsSigned([16 => true]);
+    foreach ($reader->generateRecords() as $id => $record) {
+        $json[$id] = preg_replace_callback('/\$(\d*)(\w)(\d)/', $formatCallback, $record['name']);
+    }
+
+    ksort($json);
+
+    return ['enchantMap' => $json];
 }
 
 function genericNameLookup($db2Path, $db2File, $nameField, $arrayKey) {
@@ -440,6 +539,36 @@ function genericNameLookup($db2Path, $db2File, $nameField, $arrayKey) {
     ksort($json);
 
     return [$arrayKey => $json];
+}
+
+function getGameTable($path, $withNames = false) {
+    if (!file_exists($path)) {
+        fwrite(STDERR, "Locales error: Could not find game table at $path\n");
+        return false;
+    }
+    $handle = fopen($path, 'r');
+    if ($handle === false) {
+        fwrite(STDERR, "Locales error: Could not open game table at $path\n");
+        return false;
+    }
+
+    $header = fgetcsv($handle, 4096, "\t");
+    array_shift($header);
+
+    $expectedCols = count($header) + 1;
+
+    $rows = [];
+    while (!feof($handle)) {
+        $data = fgetcsv($handle, 4096, "\t");
+        if (!$data || count($data) != $expectedCols) {
+            continue;
+        }
+        $id = array_shift($data);
+        $rows[$id] = $withNames ? array_combine($header, $data) : $data;
+    }
+    fclose($handle);
+
+    return $rows;
 }
 
 exit(main());

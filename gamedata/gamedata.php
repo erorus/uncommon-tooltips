@@ -19,14 +19,6 @@ function main() {
 
     $jsonFlags = JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES;
 
-    /*
-    fwrite(STDERR, "Building Skill Map...\n");
-    if (!($a = buildKeyValue($db2Path, 'SkillLine.db2', -1, 0))) {
-        return 1;
-    }
-    echo 'exports["skillMap"]=', json_encode($a, $jsonFlags), ";\n";
-    */
-
     fwrite(STDERR, "Building NPC->Species Map...\n");
     if (!($a = buildKeyValue($db2Path, 'BattlePetSpecies.db2', 0, -1))) {
         return 1;
@@ -52,7 +44,7 @@ function main() {
     $reader = new Reader($db2Path . 'ItemRandomProperties.db2');
     $a = [];
     foreach ($reader->generateRecords() as $id => $record) {
-        $a[$id] = arrayTrim($record[1]);
+        $a[$id] = array_values(array_filter($record[1]));
     }
     ksort($a);
     echo 'exports["itemRandomProperties"]=', json_encode($a, $jsonFlags), ";\n";
@@ -82,18 +74,21 @@ function main() {
     fwrite(STDERR, "Building Item Enchantment...\n");
     $reader = new Reader($db2Path . 'SpellItemEnchantment.db2');
     $reader->setFieldNames([
-        0 => 'key',
-        5 => 'value',
+        0 => 'spell',
+        1 => 'name',
+        2 => 'scalingPoints',
+        5 => 'effectPoints',
         12 => 'type',
+        15 => 'maxLevel',
+        16 => 'scalingClass',
     ]);
     $a = [];
     foreach ($reader->generateRecords() as $id => $record) {
         $b = [];
         foreach ($record['type'] as $x => $type) {
-            if ($type != 5) { // stat change
-                continue;
+            if ($type) {
+                $b[] = [$type, $record['spell'][$x], $record['effectPoints'][$x]];
             }
-            $b[$record['key'][$x]] = $record['value'][$x];
         }
         if ($b) {
             $a[$id] = $b;
