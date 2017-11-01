@@ -83,10 +83,80 @@ Tooltip.setLinkResolver(function(a) {
     return false;
 });
 
+function getCurvePoint(curve, point) {
+    var lastKey = curve[0][0];
+    var lastValue = curve[0][1];
+    if (lastKey > point) {
+        return lastValue;
+    }
+
+    for (var x = 0; x < curve.length; x++) {
+        let key = curve[x][0];
+        let value = curve[x][1];
+
+        if (point == key) {
+            return value;
+        }
+        if (point < key) {
+            return Math.round((value - lastValue) / (key - lastKey) * (point - lastKey) + lastValue);
+        }
+        lastKey = key;
+        lastValue = value;
+    }
+    return lastValue;
+}
+
+function getLevelOffsetBonus(offset) {
+    offset = parseInt(offset, 10);
+    if (offset >= -400 && offset < -100) {
+        return 3229 + offset;
+    }
+    if (offset >= -100 && offset <= 200) {
+        return 1472 + offset;
+    }
+    if (offset > 200 && offset <= 400) {
+        return 2929 + offset;
+    }
+    return false;
+}
+
 function getItem(details) {
     var params = {};
+    const RemoveBonusWithCurve = false;
+
     if (details.bonus && /^\d+(:\d+)*$/.test(details.bonus)) {
-        params.bl = details.bonus.replace(/:/g,',');
+        var bonuses = details.bonus.split(':');
+        if (!isNaN(details.lvl) && !details.fetchedScalingOffsetBonus) {
+            var lvl = parseInt(details.lvl, 10);
+            var newItemLevel = false;
+            for (var x = 0; x < bonuses.length; x++) {
+                if (GameData.scalingBonusMap.hasOwnProperty([bonuses[x]])) {
+                    newItemLevel = getCurvePoint(GameData.scalingCurveMap[GameData.scalingBonusMap[bonuses[x]]], lvl);
+                    if (RemoveBonusWithCurve) { // not sure whether this is a good idea
+                        bonuses.splice(x--, 1);
+                    }
+                }
+            }
+            details.bonus = bonuses.join(':');
+            if (newItemLevel) {
+                details.fetchedScalingOffsetBonus = true;
+                return BNet.GetItem(details.locale, details.id, bonuses.length ? {bl: bonuses.join(',')} : {}).then(function(item) {
+                    if (!item.id || !item.itemLevel) {
+                        return buildItemTooltip(details, item);
+                    }
+                    if (item.itemLevel != newItemLevel) {
+                        var offsetBonus = getLevelOffsetBonus(newItemLevel - item.itemLevel);
+                        if (offsetBonus) {
+                            details.bonus += (details.bonus ? ':' : '') + offsetBonus;
+                        }
+                    }
+                    return getItem(details);
+                });
+            }
+        }
+        if (bonuses.length) {
+            params.bl = bonuses.join(',');
+        }
     }
     return BNet.GetItem(details.locale, details.id, params).then(function(item) {
         details.auxItems = {};

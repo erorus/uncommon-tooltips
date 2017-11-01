@@ -19,6 +19,45 @@ function main() {
 
     $jsonFlags = JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES;
 
+    fwrite(STDERR, "Finding scaling bonuses...\n");
+    $reader = new Reader($db2Path . 'ItemBonus.db2');
+    $reader->setFieldNames([
+        0 => 'params',
+        1 => 'bonusid',
+        2 => 'changetype',
+    ]);
+    $distReader = new Reader($db2Path . 'ScalingStatDistribution.db2');
+
+    $a = [];
+    foreach ($reader->generateRecords() as $record) {
+        if ($record['changetype'] == 13) { // itemlevel scaling dist
+            $distRecord = $distReader->getRecord($record['params'][0]);
+            if (!$distRecord) {
+                fwrite(STDERR, sprintf("Could not find distribution %s for bonus %s\n", $record['params'][0], $record['bonusid']));
+            } else {
+                $a[$record['bonusid']] = $distRecord[0];
+            }
+        }
+    }
+    unset($distReader);
+    echo 'exports["scalingBonusMap"]=' , json_encode($a, $jsonFlags), ";\n";
+
+    fwrite(STDERR, "Building curves used in scaling bonuses...\n");
+    $curves = array_flip($a);
+    $reader = new Reader($db2Path . 'CurvePoint.db2');
+    $reader->setFieldNames([
+        0 => 'pair',
+        1 => 'curve',
+        2 => 'step',
+    ]);
+    $a = [];
+    foreach ($reader->generateRecords() as $record) {
+        if (isset($curves[$record['curve']])) {
+            $a[$record['curve']][$record['step']] = $record['pair'];
+        }
+    }
+    echo 'exports["scalingCurveMap"]=' . json_encode($a, $jsonFlags), ";\n";
+
     fwrite(STDERR, "Building NPC->Species Map...\n");
     if (!($a = buildKeyValue($db2Path, 'BattlePetSpecies.db2', 0, -1))) {
         return 1;
