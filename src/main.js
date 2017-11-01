@@ -604,7 +604,7 @@ function buildItemTooltip(details, json) {
     }
 
     if (json.requiredAbility && json.requiredAbility.name) {
-        top.appendChild(makeSpan(Locales.format(l.requires, json.requiredAbility.name)));
+        top.appendChild(makeSpan(Locales.format(l.requiresSkill, json.requiredAbility.name)));
     }
 
     if (json.minFactionId && json.minReputation && l.factionMap.hasOwnProperty(json.minFactionId)) {
@@ -617,6 +617,10 @@ function buildItemTooltip(details, json) {
 
     if (GameData.craftingReagents.indexOf(json.id) >= 0) {
         top.appendChild(makeSpan(l.craftingReagent, 'blue'));
+    }
+
+    if (top.lastChild && top.lastChild.nodeName == 'BR') {
+        top.removeChild(top.lastChild);
     }
 
     return top;
