@@ -13,6 +13,10 @@ const localeToDomain = {
 
 var apiCache = {};
 
+exports.HasKey = function() {
+    return key != '';
+};
+
 exports.SetKey = function(k) {
     key = k;
 };

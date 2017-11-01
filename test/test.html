@@ -2,11 +2,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <script src="../out/uncommon-tooltips.js"></script>
     <script src="key.js"></script>
     <script>
-        uncommonTooltips.init(window.battleNetKey);
+        uncommonTooltips = {
+            key: window.battleNetKey,
+            localesPrefix: '../out/locales/',
+        };
     </script>
+    <script src="../out/uncommon-tooltips.js" async></script>
     <style type="text/css">
         .level {color: blue; font-style: italic}
         .q1 {color: black}
@@ -22,9 +25,27 @@ Hi there. <a href="http://www.wowhead.com/item=118852">item link with <b>bold</b
     <a href="#" rel="item=31982">itemset</a><p>
     <a href="http://www.wowhead.com/item=152034">fel artifact relic</a><p>
     <a href="http://www.wowhead.com/item=24648">random enchantment</a> <a href="http://www.wowhead.com/item=24648?rand=-17">+27 strength</a><p>
-    <a href="http://www.wowhead.com/item=141566&bonus=3398">lvl 110, 810, 1370</a> - <a href="http://www.wowhead.com/item=141566&bonus=3398&lvl=105">lvl 105, 785, 1062</a>
+    <a href="http://www.wowhead.com/item=141566&bonus=3398">lvl 110, 810, 1370</a> - <a href="http://www.wowhead.com/item=141566&bonus=3398&lvl=105">lvl 105, 785, 1062</a><p>
 
-    <div style="margin-top: 10em">
+    <a href="http://www.wowhead.com/item=22249">english enchanting bag</a> -
+    <a href="http://it.wowhead.com/item=22249">italian enchanting bag</a> -
+    <a href="http://fr.wowhead.com/item=22249">french enchanting bag</a><p>
+    <a href="http://www.wowhead.com/item=37606">english 1-slot bag</a> -
+    <a href="http://it.wowhead.com/item=37606">italian 1-slot bag</a> -
+    <a href="http://fr.wowhead.com/item=37606">french 1-slot bag</a><p>
+
+    <a href="http://www.wowhead.com/item=103413">english</a> -
+    <a href="http://de.wowhead.com/item=103413">german</a> -
+    <a href="http://es.wowhead.com/item=103413">spanish</a> -
+    <a href="http://fr.wowhead.com/item=103413">french</a> -
+    <a href="http://it.wowhead.com/item=103413">italian</a> -
+    <a href="http://ko.wowhead.com/item=103413">korean</a> -
+    <a href="http://pt.wowhead.com/item=103413">portuguese</a> -
+    <a href="http://ru.wowhead.com/item=103413">russian</a><p>
+
+
+
+<div style="margin-top: 10em">
         <a href="http://www.wowhead.com/item=129045" id="something-link">something</a> <input type="text" value="129045" onblur="document.getElementById('something-link').href='http://www.wowhead.com/item=' + this.value;">
     </div>
 

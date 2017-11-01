@@ -1,26 +1,41 @@
-var locales = {
-    'en_US': require('./locales/en_US.js'),
+var validLocales = ['en_US', 'de_DE', 'es_ES', 'fr_FR', 'it_IT', 'ko_KR', 'pt_BR', 'ru_RU'];
+var locales = {};
+
+var localesPrefix = 'locales/';
+const localesVersion = 1;
+
+exports.getLocalePrefix = function() {
+    return localesPrefix;
 };
 
-var currentLocale = 'en_US';
-
-exports.dictionary = function() {
-    return locales[currentLocale];
+exports.setLocalePrefix = function(val) {
+    localesPrefix = val;
 };
 
-exports.setLocale = function(val) {
-    if (locales.hasOwnProperty(val)) {
-        currentLocale = val;
+exports.getLocale = function(val) {
+    var loc = val;
+    if (validLocales.indexOf(loc) < 0) {
+        loc = validLocales[0];
     }
-    return currentLocale;
+    if (locales.hasOwnProperty(loc)) {
+        return locales[loc];
+    }
+
+    return fetch(localesPrefix + loc.replace(/_/, '') + '.json?' + localesVersion, {
+        credentials: 'omit',
+        cache: 'force-cache',
+        mode: 'cors',
+    }).then(function(response){
+        return locales[loc] = response.json();
+    });
 };
 
 exports.format = function(pattern) {
     var pos = 1;
     var args = arguments;
 
-    var s = pattern.replace(/%(.)/g, function(match, op) {
-        var arg = args[pos];
+    var s = pattern.replace(/%(?:(\d+)\$)?(.)/g, function(match, reqPos, op) {
+        var arg = args[reqPos ? reqPos : pos];
         if (typeof arg == 'undefined') {
             return match;
         }

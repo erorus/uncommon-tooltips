@@ -1,9 +1,14 @@
+const Version = {
+    'version': '0.9',
+    'credit': 'Erorus',
+};
+
 const BNet = require('./battlenet');
 const Tooltip = require('./tooltip');
 const GameData = require('./gamedata');
 const Locales = require('./locales');
 
-const IconPath = 'https://render-us.worldofwarcraft.com/icons/56/';
+var IconPrefix = 'https://render-us.worldofwarcraft.com/icons/56/';
 
 const DomainToLocale = {
     'www': 'en_US',
@@ -63,6 +68,14 @@ Tooltip.setLinkResolver(function(a) {
         details.type = result[1];
         details.id = result[2];
     }
+    if (!details.type) {
+        return false;
+    }
+    if (!BNet.HasKey()) {
+        console.error('Uncommon Tooltips: No Battle.net was supplied. Tooltips disabled.');
+        return false;
+    }
+
     paramWalk.call(details, rel);
 
     if (!details.domain) {
@@ -158,7 +171,14 @@ function getItem(details) {
             params.bl = bonuses.join(',');
         }
     }
-    return BNet.GetItem(details.locale, details.id, params).then(function(item) {
+    return Promise.all([
+            BNet.GetItem(details.locale, details.id, params),
+            Locales.getLocale(details.locale),
+        ]).then(function(firstResults) {
+
+        var item = firstResults[0];
+        details.dictionary = firstResults[1];
+
         details.auxItems = {};
 
         var promises = [];
@@ -201,7 +221,10 @@ function getItem(details) {
 }
 
 function getSpecies(details) {
-    return BNet.GetSpecies(details.locale, details.id).then(buildSpeciesTooltip.bind(null, details));
+    return Promise.all([
+        BNet.GetSpecies(details.locale, details.id),
+        Locales.getLocale(details.locale),
+        ]).then(buildSpeciesTooltip.bind(null, details));
 }
 
 function formatNumber(locale, num, decimals) {
@@ -217,22 +240,27 @@ function formatNumber(locale, num, decimals) {
     });
 }
 
-function buildSpeciesTooltip(details, json) {
-    Locales.setLocale(details.locale);
-    var l = Locales.dictionary();
+function buildSpeciesTooltip(details, promiseOut) {
+    var json = promiseOut[0];
+    var l = promiseOut[1]; // dictionary
 
     var s, x, y, top = document.createElement('div');
 
     if (!json.speciesId) {
-        var reason = json.reason || 'Unable to get species information';
-        top.appendChild(makeSpan(reason));
+        top.appendChild(makeSpan('Unable to get species information', 'red'));
+        if (json.reason) {
+            top.appendChild(makeSpan(json.reason));
+        }
+        if (json.detail) {
+            top.appendChild(makeSpan(json.detail));
+        }
         return top;
     }
 
     if (json.icon) {
         var i = document.createElement('div');
         i.className = 'icon';
-        i.style.backgroundImage = "url('" + IconPath + encodeURIComponent(json.icon) + ".jpg')";
+        i.style.backgroundImage = "url('" + IconPrefix + encodeURIComponent(json.icon) + ".jpg')";
         top.appendChild(i);
     }
 
@@ -257,24 +285,26 @@ function buildSpeciesTooltip(details, json) {
 }
 
 function buildItemTooltip(details, json) {
-    Locales.setLocale(details.locale);
-    var l = Locales.dictionary();
+    var l = details.dictionary;
     var formatNum = formatNumber.bind(null, details.locale);
-
-    console.log(details, json);
 
     var s, x, y, top = document.createElement('div');
 
     if (!json.id) {
-        var reason = json.reason || 'Unable to get item information';
-        top.appendChild(makeSpan(reason));
+        top.appendChild(makeSpan('Unable to get item information', 'red'));
+        if (json.reason) {
+            top.appendChild(makeSpan(json.reason));
+        }
+        if (json.detail) {
+            top.appendChild(makeSpan(json.detail));
+        }
         return top;
     }
 
     if (json.icon) {
         var i = document.createElement('div');
         i.className = 'icon';
-        i.style.backgroundImage = "url('" + IconPath + encodeURIComponent(json.icon) + ".jpg')";
+        i.style.backgroundImage = "url('" + IconPrefix + encodeURIComponent(json.icon) + ".jpg')";
         top.appendChild(i);
     }
 
@@ -373,7 +403,7 @@ function buildItemTooltip(details, json) {
         top.appendChild(makeSpan(formatNum(json.armor) + ' ' + l.armor));
     }
 
-    var buildStats = statsSection.bind(null, formatNum, top);
+    var buildStats = statsSection.bind(null, details.dictionary, formatNum, top);
 
     buildStats(json.bonusStats);
     buildStats(getRandEnchantStats(details, json), 'q2');
@@ -408,7 +438,7 @@ function buildItemTooltip(details, json) {
             var s = makeSpan(false);
 
             var img = document.createElement('img');
-            img.src = IconPath + socketedGems[x].icon + '.jpg';
+            img.src = IconPrefix + socketedGems[x].icon + '.jpg';
             img.className = 'socket icon';
             s.appendChild(img);
 
@@ -671,7 +701,7 @@ function getRandEnchantStats(details, json) {
         return [];
     }
 
-    var l = Locales.dictionary();
+    var l = details.dictionary;
 
     var x, y, enchMap, enchId, stat, amount;
 
@@ -748,8 +778,7 @@ function getRandEnchantStats(details, json) {
     return statArray;
 }
 
-function statsSection(formatNum, top, statOutput, defaultClass) {
-    var l = Locales.dictionary();
+function statsSection(l, formatNum, top, statOutput, defaultClass) {
     var x, y, stat;
     if (!defaultClass) {
         defaultClass = '';
@@ -886,32 +915,101 @@ function makeSpan(txt, cls) {
     return s;
 }
 
-var ranSetup = false;
-function setupAfterLoad() {
-    if (ranSetup) {
-        return;
+(function() {
+    var env = {
+        'key': '',
+        'localesPrefix': Locales.getLocalePrefix(),
+        'iconsPrefix': IconPrefix,
+    };
+
+    function setup()
+    {
+        Tooltip.init();
+
+        var initEnv = window.uncommonTooltips;
+
+        var subSet = function(k, value) {
+            var o = {};
+            o[k] = value;
+            window.uncommonTooltips = o;
+        };
+        var subGet = function(k) {
+            return this[k];
+        };
+
+        Object.defineProperty(
+            window, 'uncommonTooltips', {
+                get: function ()
+                {
+                    var o = {};
+                    for (var k in env) {
+                        if (!env.hasOwnProperty(k)) {
+                            continue;
+                        }
+                        if (k == 'key') {
+                            continue;
+                        }
+                        Object.defineProperty(o, k, {
+                            get: subGet.bind(env, k),
+                            set: subSet.bind(env, k),
+                            enumerable: true,
+                        });
+                    }
+                    for (var k in Version) {
+                        if (!Version.hasOwnProperty(k)) {
+                            continue;
+                        }
+                        Object.defineProperty(o, k, {
+                            get: subGet.bind(Version, k),
+                            enumerable: true,
+                        });
+                    }
+
+                    return o;
+                },
+                set: function (value)
+                {
+                    switch (typeof value) {
+                        case 'string':
+                            env.key = value;
+                            break;
+                        case 'object':
+                            for (var k in value) {
+                                if (!value.hasOwnProperty(k) || !env.hasOwnProperty(k)) {
+                                    continue;
+                                }
+                                env[k] = value[k];
+                            }
+                            break;
+                        default:
+                            return false;
+                    }
+                    readEnvironment();
+                },
+                configurable: false,
+                enumerable: true,
+            }
+        );
+
+        window.uncommonTooltips = initEnv;
     }
-    ranSetup = true;
 
-    Tooltip.init();
-}
-
-window.uncommonTooltips = {
-    init: function(info) {
-        if (typeof info == 'string') {
-            BNet.SetKey(info);
-        } else if (info.hasOwnProperty('key')) {
-            BNet.SetKey(info.key);
-        } else {
-            return false;
+    function readEnvironment()
+    {
+        if (env.hasOwnProperty('key')) {
+            BNet.SetKey(env.key);
         }
-
-        if (document.readyState === "interactive" || document.readyState === "complete") {
-            setupAfterLoad();
-        } else {
-            window.addEventListener('load', setupAfterLoad);
+        if (env.hasOwnProperty('localesPrefix')) {
+            Locales.setLocalePrefix(env.localesPrefix);
         }
-
-        return true;
+        if (env.hasOwnProperty('iconsPrefix')) {
+            IconPrefix = env.iconsPrefix;
+        }
     }
-};
+
+    if (document.readyState === "interactive" || document.readyState === "complete") {
+        setup();
+    } else {
+        window.addEventListener('load', setup);
+    }
+})();
