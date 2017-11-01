@@ -16,7 +16,7 @@ const cssRules = `
 
     pointer-events: none;
     position: absolute;
-    display: none;
+    visibility: hidden;
 }
 
 #uncommon-tooltip div.icon {
@@ -158,10 +158,9 @@ function mouseOver(evt) {
             if (step) {
                 currentLink = foundLink;
 
-                updatePosition(evt);
-                populateDiv(foundLink, document.createTextNode('Loading...'));
+                populateDiv(foundLink, evt, document.createTextNode('Loading...'));
 
-                step.then(populateDiv.bind(null, foundLink));
+                step.then(populateDiv.bind(null, foundLink, evt));
             } else {
                 foundLink = false;
             }
@@ -171,25 +170,24 @@ function mouseOver(evt) {
 
     if (!foundLink && currentLink) {
         currentLink = null;
-        //emptyDiv(true);
+        emptyDiv();
     }
 }
 
-function populateDiv(origLink, fragment) {
+function populateDiv(origLink, evt, fragment) {
     if (currentLink != origLink) {
         return;
     }
 
     emptyDiv();
     div.appendChild(fragment);
-    div.style.display = 'block';
+    updatePosition(evt);
+    div.style.visibility = 'visible';
 }
 
-function emptyDiv(resetPosition) {
-    div.style.display = 'none';
-    if (resetPosition) {
-        div.style.top = div.style.left = '-2000px';
-    }
+function emptyDiv() {
+    div.style.visibility = 'hidden';
+    div.style.top = div.style.left = '-2000px';
     while (div.firstChild) {
         div.removeChild(div.firstChild);
     }
@@ -200,8 +198,13 @@ function updatePosition(evt) {
         return;
     }
 
-    div.style.top = '' + (evt.clientY + pointerOffset) + 'px';
-    div.style.left = '' + (evt.clientX + pointerOffset) + 'px';
+    var rect = div.getBoundingClientRect();
+
+    var moveUp = (document.documentElement.clientHeight < (evt.clientY + rect.height));
+    var moveRight = (document.documentElement.clientWidth < (evt.clientX + rect.width));
+
+    div.style.top = '' + (evt.clientY + window.scrollY + (moveUp ? -1 * rect.height - pointerOffset / 2 : pointerOffset)) + 'px';
+    div.style.left = '' + (evt.clientX + window.scrollX + (moveRight ? -1 * rect.width - pointerOffset / 2 : pointerOffset / (moveUp ? 2 : 1))) + 'px';
 }
 
 exports.getCurrentLink = function() {
@@ -231,7 +234,7 @@ exports.createSocket = function(cls) {
     d.appendChild(makeDivWithClass('middle top'));
 
     return d;
-}
+};
 
 function addCss(css){
     var head = document.getElementsByTagName('head')[0];

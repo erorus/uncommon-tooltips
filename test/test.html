@@ -15,7 +15,7 @@
         .q1 {color: black}
     </style>
 </head>
-<body style="background-color: #999">
+<body style="background-color: #999; margin: 3em">
 Hi there. <a href="http://www.wowhead.com/item=118852">item link with <b>bold</b> text</a><p>
     <a href="#" rel="item=21877">netherweave cloth</a><p>
     <a href="http://www.wowhead.com/item=111556">BoP cloth</a><p>
@@ -44,9 +44,21 @@ Hi there. <a href="http://www.wowhead.com/item=118852">item link with <b>bold</b
     <a href="http://ru.wowhead.com/item=103413">russian</a><p>
 
 
+    <a href="http://www.wowhead.com/item=103413" style="position: absolute; top: 0; left: 0">Top Left</a>
+    <a href="http://www.wowhead.com/item=103413" style="position: absolute; bottom: 0; left: 0">Bottom Left</a>
+    <a href="http://www.wowhead.com/item=103413" style="position: absolute; top: 0; right: 0">Top Right</a>
+    <a href="http://www.wowhead.com/item=103413" style="position: absolute; bottom: 0; right: 0">Bottom Right</a>
+
 
 <div style="margin-top: 10em">
         <a href="http://www.wowhead.com/item=129045" id="something-link">something</a> <input type="text" value="129045" onblur="document.getElementById('something-link').href='http://www.wowhead.com/item=' + this.value;">
+    </div>
+
+    <div style="margin-top: 2000px; position: relative; height: 600px">
+        <a href="http://www.wowhead.com/item=103413" style="position: absolute; top: 0; left: 0">Top Left</a>
+        <a href="http://www.wowhead.com/item=103413" style="position: absolute; bottom: 0; left: 0">Bottom Left</a>
+        <a href="http://www.wowhead.com/item=103413" style="position: absolute; top: 0; right: 0">Top Right</a>
+        <a href="http://www.wowhead.com/item=103413" style="position: absolute; bottom: 0; right: 0">Bottom Right</a>
     </div>
 
 </p>
