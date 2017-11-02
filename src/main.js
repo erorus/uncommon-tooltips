@@ -406,7 +406,7 @@ function buildItemTooltip(details, json) {
     var buildStats = statsSection.bind(null, details.dictionary, formatNum, top);
 
     buildStats(json.bonusStats);
-    buildStats(getRandEnchantStats(details, json), 'q2');
+    buildStats(getRandEnchantStats(details, json, formatNum), 'q2');
 
     var addedBlank = false;
 
@@ -512,7 +512,9 @@ function buildItemTooltip(details, json) {
 
             spellText = '';
             spellText += (l.spellTriggerMap.hasOwnProperty(json.itemSpells[x].trigger) ? l.spellTriggerMap[json.itemSpells[x].trigger] : (json.itemSpells[x].trigger + ':')) + ' ';
-            spellText += json.itemSpells[x].spell.description;
+            spellText += json.itemSpells[x].spell.description.replace(/\^(\d+(?:\.\d+)?)/g, '#'); /*function(full, p1){
+                return Math.round(parseFloat(p1) * getRandomPropPoints(json.itemLevel, json.quality, json.inventoryType, json.itemSubClass));
+            });*/
 
             if (!addedBlank) {
                 addedBlank = true;
@@ -700,7 +702,7 @@ function sortItemStats(bonusStats) {
     return {stats: statsLists, allResist: allResistAmount, effects: effects};
 }
 
-function getRandEnchantStats(details, json) {
+function getRandEnchantStats(details, json, formatNum) {
     if (!details.rand) {
         return [];
     }
@@ -750,20 +752,21 @@ function getRandEnchantStats(details, json) {
             stat = GameData.itemEnchants[enchId][enchIndex][1];
             effectPoints = GameData.itemEnchants[enchId][enchIndex][2];
 
+            if (enchMap[enchId] == 0) {
+                // use baked-in amount
+                amount = effectPoints;
+            } else {
+                // use random prop points
+                amount = getRandomPropPoints(json.itemLevel, json.quality, json.inventoryType, json.itemSubClass) * enchMap[enchId] / 10000;
+            }
+
             if (effectType == 5) {
-                if (enchMap[enchId] == 0) {
-                    // use baked-in amount
-                    amount = effectPoints;
-                } else {
-                    // use random prop points
-                    amount = getRandomPropPoints(json.itemLevel, json.quality, json.inventoryType, json.itemSubClass) * enchMap[enchId] / 10000;
-                }
                 if (!statList.hasOwnProperty(stat)) {
                     statList[stat] = 0;
                 }
                 statList[stat] += amount;
             } else {
-                statArray.push(l.enchantMap[enchId]);
+                statArray.push(l.enchantMap[enchId].replace(/\$i\b/g, formatNum(amount)));
                 break;
             }
         }

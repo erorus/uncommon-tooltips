@@ -65,8 +65,9 @@ $GlobalStringsTemplate = [
     'spellTriggerMap' => [
         'ON_USE' => 'ITEM_SPELL_TRIGGER_ONUSE', // Use:
         'ON_EQUIP' => 'ITEM_SPELL_TRIGGER_ONEQUIP', // Equip:
+        'ON_PROC' => 'ITEM_SPELL_TRIGGER_ONPROC', // Chance on hit:
         'ON_LEARN' => 'LEARN_SPELL_OBJECTIVE', // Learn Spell:
-        'ON_PICKUP' => 'Pickup:',
+        'ON_PICKUP' => '', // empty, see 153290
     ],
 
     'itemBindMap' => [
