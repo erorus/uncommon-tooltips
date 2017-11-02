@@ -135,7 +135,7 @@ function getLevelOffsetBonus(offset) {
 
 function getItem(details) {
     var params = {};
-    const RemoveBonusWithCurve = false;
+    const RemoveBonusWithCurve = true;
 
     if (details.bonus && /^\d+(:\d+)*$/.test(details.bonus)) {
         var bonuses = details.bonus.split(':');
