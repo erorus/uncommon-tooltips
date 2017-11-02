@@ -512,7 +512,7 @@ function buildItemTooltip(details, json) {
 
             spellText = '';
             spellText += (l.spellTriggerMap.hasOwnProperty(json.itemSpells[x].trigger) ? l.spellTriggerMap[json.itemSpells[x].trigger] : (json.itemSpells[x].trigger + ':')) + ' ';
-            spellText += json.itemSpells[x].spell.description.replace(/\^(\d+(?:\.\d+)?)/g, '#'); /*function(full, p1){
+            spellText += json.itemSpells[x].spell.description.replace(/\^(\d+(?:[\.,]\d+)?)/g, '#'); /*function(full, p1){
                 return Math.round(parseFloat(p1) * getRandomPropPoints(json.itemLevel, json.quality, json.inventoryType, json.itemSubClass));
             });*/
 
