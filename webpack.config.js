@@ -1,4 +1,5 @@
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const BannerWebpackPlugin = require('banner-webpack-plugin');
+const PACKAGE = require('./package.json');
 
 module.exports = {
     entry: ['promise-polyfill','whatwg-fetch','./src/main.js'],
@@ -6,7 +7,21 @@ module.exports = {
         filename: 'out/uncommon-tooltips.js'
     },
     plugins: [
-        //new UglifyJSPlugin()
+        new BannerWebpackPlugin({
+            chunks: {
+                'main': {
+                    beforeContent:
+`/**
+ * Uncommon Tooltips Beta v${PACKAGE.version}
+ * ${PACKAGE.description}
+ * by ${PACKAGE.author}
+ *
+ * Not for 3rd-party use... yet
+ */
+`
+                }
+            }
+        }),
     ],
     module: {
         loaders: [{
