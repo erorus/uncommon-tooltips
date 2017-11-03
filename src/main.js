@@ -58,12 +58,12 @@ Tooltip.setLinkResolver(function(a) {
 
     var isWowDB = false;
 
-    if (result = a.href.match(new RegExp('^https?://(?:([^\.]+)\.)?wowdb\.com/items/(\\d+)', 'i'))) {
+    if (result = a.href.match(new RegExp('^https?://(?:([^\.]+)\.)?wowdb\.com/(' + AcceptableTypes.join('|') + ')s/(\\d+)', 'i'))) {
         isWowDB = true;
 
         details.domain = result[1];
-        details.type = 'item';
-        details.id = result[2];
+        details.type = result[2];
+        details.id = result[3];
 
         var wowdbDetails = {};
         paramWalk.call(wowdbDetails, a.href);
@@ -434,7 +434,7 @@ function buildItemTooltip(details, json) {
     var buildStats = statsSection.bind(null, details.dictionary, formatNum, top);
 
     buildStats(json.bonusStats);
-    buildStats(getRandEnchantStats(details, json, formatNum), 'q2');
+    buildStats(getRandEnchantStats(details, json, formatNum));
 
     var addedBlank = false;
 
@@ -710,8 +710,8 @@ function sortItemStats(bonusStats) {
     }
 
     var statComparitor = function(order,a,b) {
-        var apos = order.indexOf(a.stat);
-        var bpos = order.indexOf(b.stat);
+        var apos = order.indexOf(parseInt(a.stat,10));
+        var bpos = order.indexOf(parseInt(b.stat,10));
 
         if (apos < 0) {
             return 1;
@@ -819,10 +819,11 @@ function statsSection(l, formatNum, top, statOutput, defaultClass) {
         defaultClass = '';
     }
     var statsSorted = sortItemStats(statOutput);
+    var statsWithoutNumbers = [64]; // indestructible
 
     for (x = 0; x < statsSorted.stats.length; x++) {
         for (y = 0; stat = statsSorted.stats[x][y]; y++) {
-            top.appendChild(makeSpan((stat.amount >= 0 ? '+' : '-') + formatNum(stat.amount) + ' ' + l.itemStatMap[stat.stat], x == 1 ? 'q2' : defaultClass));
+            top.appendChild(makeSpan((statsWithoutNumbers.indexOf(parseInt(stat.stat, 10)) < 0 ? (stat.amount >= 0 ? '+' : '-') + formatNum(stat.amount) + ' ' : '') + l.itemStatMap[stat.stat], x == 1 ? 'q2' : defaultClass));
         }
     }
     if (statsSorted.allResist) {

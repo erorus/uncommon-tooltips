@@ -2,7 +2,7 @@ var validLocales = ['en_US', 'de_DE', 'es_ES', 'fr_FR', 'it_IT', 'ko_KR', 'pt_BR
 var locales = {};
 
 var localesPrefix = 'locales/';
-const localesVersion = 2;
+const localesVersion = 3;
 
 exports.getLocalePrefix = function() {
     return localesPrefix;

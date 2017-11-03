@@ -200,8 +200,8 @@ function updatePosition(evt) {
 
     var rect = div.getBoundingClientRect();
 
-    var moveUp = (document.documentElement.clientHeight < (evt.clientY + rect.height));
-    var moveRight = (document.documentElement.clientWidth < (evt.clientX + rect.width));
+    var moveUp = (document.documentElement.clientHeight < (evt.clientY + rect.height + pointerOffset));
+    var moveRight = (document.documentElement.clientWidth < (evt.clientX + rect.width + pointerOffset));
 
     div.style.top = '' + (evt.clientY + window.scrollY + (moveUp ? -1 * rect.height - pointerOffset / 2 : pointerOffset)) + 'px';
     div.style.left = '' + (evt.clientX + window.scrollX + (moveRight ? -1 * rect.width - pointerOffset / 2 : pointerOffset / (moveUp ? 2 : 1))) + 'px';

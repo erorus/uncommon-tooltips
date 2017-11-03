@@ -354,7 +354,7 @@ function getInventorySubtype($db2Path) {
                 $includeRecord = in_array($record['subclass'], [0,1,2,3,4,5,6,7,8,10,13,15,16,18,19,20]);
                 break;
             case 4: // armor
-                $includeRecord = in_array($record['subclass'], [0,1,2,3,4,5]);
+                $includeRecord = in_array($record['subclass'], [1,2,3,4,5]);
                 break;
         }
         if ($includeRecord) {
