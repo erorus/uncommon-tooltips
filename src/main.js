@@ -25,7 +25,7 @@ const AcceptableTypes = ['item','npc'];
 
 function paramWalk(str) {
     var t = this;
-    var re = /\b([a-zA-Z0-9\.-]+)=([a-zA-Z0-9\.:-]+)/g;
+    var re = /\b([a-zA-Z0-9\.-]+)=([a-zA-Z0-9\.:,-]+)/g;
 
     var k, v;
 
@@ -52,22 +52,48 @@ Tooltip.setLinkResolver(function(a) {
         rel = a.getAttribute('data-wowhead');
     }
 
-    if (/^np\b/.test(rel)) {
+    if (/\bnt\b/.test(rel)) {
         return false;
     }
 
-    if (result = a.href.match(new RegExp('^https?://(?:([^\.]+)\.)?wowhead\.com/(' + AcceptableTypes.join('|') + ')=(\\d+)', 'i'))) {
+    var isWowDB = false;
+
+    if (result = a.href.match(new RegExp('^https?://(?:([^\.]+)\.)?wowdb\.com/items/(\\d+)', 'i'))) {
+        isWowDB = true;
+
         details.domain = result[1];
-        details.type = result[2];
-        details.id = result[3];
-
-        paramWalk.call(details, a.href);
-    }
-
-    if (result = rel.match(new RegExp('\\b(' + AcceptableTypes.join('|') + ')=(\\d+)', 'i'))) {
-        details.type = result[1];
+        details.type = 'item';
         details.id = result[2];
+
+        var wowdbDetails = {};
+        paramWalk.call(wowdbDetails, a.href);
+        if (wowdbDetails.hasOwnProperty('bonusids')) {
+            details.bonus = wowdbDetails.bonusids.replace(/,/g, ':');
+        }
+        if (wowdbDetails.hasOwnProperty('enchantment')) {
+            details.ench = wowdbDetails.enchantment;
+        }
+        if (wowdbDetails.hasOwnProperty('gems')) {
+            details.gems = wowdbDetails.gems.replace(/,/g, ':');
+        }
+        if (wowdbDetails.hasOwnProperty('setpieces')) {
+            details.pcs = wowdbDetails.setpieces.replace(/,/g, ':');
+        }
+    } else {
+        if (result = a.href.match(new RegExp('^https?://(?:([^\.]+)\.)?wowhead\.com/(' + AcceptableTypes.join('|') + ')=(\\d+)', 'i'))) {
+            details.domain = result[1];
+            details.type = result[2];
+            details.id = result[3];
+
+            paramWalk.call(details, a.href);
+        }
+
+        if (result = rel.match(new RegExp('\\b(' + AcceptableTypes.join('|') + ')=(\\d+)', 'i'))) {
+            details.type = result[1];
+            details.id = result[2];
+        }
     }
+
     if (!details.type) {
         return false;
     }
@@ -76,7 +102,9 @@ Tooltip.setLinkResolver(function(a) {
         return false;
     }
 
-    paramWalk.call(details, rel);
+    if (!isWowDB) {
+        paramWalk.call(details, rel);
+    }
 
     if (!details.domain) {
         details.domain = 'www';
