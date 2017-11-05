@@ -10,12 +10,10 @@ exports.getVersions = function() {
         if (!locales.hasOwnProperty(k)) {
             continue;
         }
-        locales[k].then((function(nm) { return function(l){
-            o[nm] = {
-                'patch': l.localeInfo.patch,
-                'generated': l.localeInfo.generated,
-            }
-        };})(k));
+        o[k] = {
+            'patch': locales[k].localeInfo.patch,
+            'generated': locales[k].localeInfo.generated,
+        }
     }
     return o;
 };
@@ -42,7 +40,13 @@ exports.getLocale = function(val) {
         cache: 'force-cache',
         mode: 'cors',
     }).then(function(response){
-        return locales[loc] = response.json();
+        return response.json().then(function(result) {
+            return locales[loc] = result;
+        }).catch(function(response) {
+            console.error('Uncommon Tooltips: Cannot parse locale json for ' + loc, response);
+        });
+    }).catch(function(response){
+        console.error('Uncommon Tooltips: Cannot fetch locale ' + loc, response);
     });
 };
 
