@@ -199,6 +199,9 @@ function getItem(details) {
             params.bl = bonuses.join(',');
         }
     }
+    if (!params.bl) {
+        params.bl = '0'; // specify an empty bonus, so we aren't pushed to the lowest item context, and instead get the raw item as it appears in-game
+    }
     return Promise.all([
             BNet.GetItem(details.locale, details.id, params),
             Locales.getLocale(details.locale),
