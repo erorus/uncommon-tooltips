@@ -1,8 +1,4 @@
-const Version = {
-    'version': '0.9',
-    'credit': 'Erorus',
-};
-
+const Package = require('../package.json');
 const BNet = require('./battlenet');
 const Tooltip = require('./tooltip');
 const GameData = require('./gamedata');
@@ -1027,8 +1023,20 @@ function makeSpan(txt, cls) {
         'iconsPrefix': IconPrefix,
     };
 
+    function getVersionInfo() {
+        return {
+            'name': Package.name,
+            'version': Package.version,
+            'description': Package.description,
+            'author': Package.author,
+            'patch': GameData.patch,
+            'locales': Locales.getVersions(),
+        };
+    }
+
     function setup()
     {
+        console.info('Loaded Uncommon Tooltips v' + Package.version + ' for patch ' + GameData.patch);
         Tooltip.init();
 
         var initEnv = window.uncommonTooltips;
@@ -1060,15 +1068,10 @@ function makeSpan(txt, cls) {
                             enumerable: true,
                         });
                     }
-                    for (var k in Version) {
-                        if (!Version.hasOwnProperty(k)) {
-                            continue;
-                        }
-                        Object.defineProperty(o, k, {
-                            get: subGet.bind(Version, k),
-                            enumerable: true,
-                        });
-                    }
+                    Object.defineProperty(o, 'version', {
+                        get: getVersionInfo,
+                        enumerable: true,
+                    });
 
                     return o;
                 },

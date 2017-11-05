@@ -1,8 +1,11 @@
 <?php
 
 require_once __DIR__ . '/db2/src/autoload.php';
+require_once __DIR__ . '/exeversion.php';
 
 use \Erorus\DB2\Reader;
+
+date_default_timezone_set('UTC');
 
 $SkillIds = [
     171, // Alchemy
@@ -199,7 +202,19 @@ function main() {
         return 1;
     }
 
-    $json = [];
+    $json = [
+        'localeInfo' => [
+            'notice' => 'This file was generated for Uncommon Tooltips by Erorus',
+            'url' => 'https://www.uncommon-tooltips.com/',
+            'generated' => date('c'),
+        ],
+    ];
+
+    $wowPath = $db2Path . '../Wow.exe';
+    if (file_exists($wowPath) && ($version = GetExeVersion($wowPath))) {
+        ksort($version);
+        $json['localeInfo']['patch'] = implode('.', array_values($version));
+    }
 
     $parts = [
         'getGlobalStrings',

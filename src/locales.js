@@ -2,7 +2,23 @@ var validLocales = ['en_US', 'de_DE', 'es_ES', 'fr_FR', 'it_IT', 'ko_KR', 'pt_BR
 var locales = {};
 
 var localesPrefix = 'locales/';
-const localesVersion = 3;
+const localesVersion = 4;
+
+exports.getVersions = function() {
+    var o = {};
+    for (var k in locales) {
+        if (!locales.hasOwnProperty(k)) {
+            continue;
+        }
+        locales[k].then((function(nm) { return function(l){
+            o[nm] = {
+                'patch': l.localeInfo.patch,
+                'generated': l.localeInfo.generated,
+            }
+        };})(k));
+    }
+    return o;
+};
 
 exports.getLocalePrefix = function() {
     return localesPrefix;

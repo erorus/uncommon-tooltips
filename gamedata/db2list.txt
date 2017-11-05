@@ -16,3 +16,4 @@ DBFilesClient\SpellEffect.db2
 DBFilesClient\SpellItemEnchantment.db2
 DBFilesClient\Toy.db2
 GameTables\SpellScaling.txt
+Wow.exe

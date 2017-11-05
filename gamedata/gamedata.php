@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/db2/src/autoload.php';
+require_once __DIR__ . '/exeversion.php';
 
 use \Erorus\DB2\Reader;
 
@@ -18,6 +19,12 @@ function main() {
     }
 
     $jsonFlags = JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES;
+
+    $wowPath = $db2Path . '../Wow.exe';
+    if (file_exists($wowPath) && ($version = GetExeVersion($wowPath))) {
+        ksort($version);
+        echo 'exports["patch"]=' , json_encode(implode('.', array_values($version))), ";\n";
+    }
 
     fwrite(STDERR, "Finding scaling bonuses...\n");
     $reader = new Reader($db2Path . 'ItemBonus.db2');
