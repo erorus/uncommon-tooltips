@@ -110,6 +110,7 @@ const SocketColors = {
 const pointerOffset = 16; // px
 
 var currentLink = null;
+var lastEvt = null, haveMoveListener = false;
 var linkResolver = () => { return Promise.resolve(document.createTextNode('error: no resolver')); };
 
 var div = document.createElement('div');
@@ -133,7 +134,6 @@ exports.init = function() {
 
     document.body.appendChild(div);
     window.addEventListener('mouseover', mouseOver);
-    window.addEventListener('mousemove', updatePosition);
 };
 
 function mouseOver(evt) {
@@ -157,10 +157,14 @@ function mouseOver(evt) {
             step = linkResolver(foundLink);
             if (step) {
                 currentLink = foundLink;
+                if (!haveMoveListener) {
+                    haveMoveListener = true;
+                    window.addEventListener('mousemove', updatePosition);
+                }
 
-                populateDiv(foundLink, evt, document.createTextNode('Loading...'));
+                populateDiv(foundLink, lastEvt = evt, document.createTextNode('Loading...'));
 
-                step.then(populateDiv.bind(null, foundLink, evt));
+                return step.then(populateDiv.bind(null, foundLink, false));
             } else {
                 foundLink = false;
             }
@@ -169,6 +173,10 @@ function mouseOver(evt) {
     }
 
     if (!foundLink && currentLink) {
+        if (haveMoveListener) {
+            window.removeEventListener('mousemove', updatePosition);
+            haveMoveListener = false;
+        }
         currentLink = null;
         emptyDiv();
     }
@@ -181,7 +189,7 @@ function populateDiv(origLink, evt, fragment) {
 
     emptyDiv();
     div.appendChild(fragment);
-    updatePosition(evt);
+    updatePosition(evt || lastEvt);
     div.style.visibility = 'visible';
 }
 
@@ -197,6 +205,7 @@ function updatePosition(evt) {
     if (!currentLink) {
         return;
     }
+    lastEvt = evt;
 
     var rect = div.getBoundingClientRect();
 
