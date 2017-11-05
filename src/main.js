@@ -21,7 +21,7 @@ const DomainToLocale = {
     'ko': 'ko_KR',
 };
 
-const AcceptableTypes = ['item','npc'];
+const AcceptableTypes = ['item','npc','achievement'];
 
 function paramWalk(str) {
     var t = this;
@@ -113,6 +113,9 @@ Tooltip.setLinkResolver(function(a) {
 
     if (details.type == 'item') {
         return getItem(details);
+    }
+    if (details.type == 'achievement') {
+        return getAchievement(details);
     }
     if (details.type == 'npc' && GameData.speciesMap.hasOwnProperty(details.id)) {
         details.npc = details.id;
@@ -258,6 +261,13 @@ function getSpecies(details) {
         ]).then(buildSpeciesTooltip.bind(null, details));
 }
 
+function getAchievement(details) {
+    return Promise.all([
+        BNet.GetAchievement(details.locale, details.id),
+        Locales.getLocale(details.locale),
+    ]).then(buildAchievementTooltip.bind(null, details));
+}
+
 function formatNumber(locale, num, decimals) {
     if (locale) {
         locale = locale.replace(/_/g, '-');
@@ -315,6 +325,62 @@ function buildSpeciesTooltip(details, promiseOut) {
     return top;
 }
 
+function buildAchievementTooltip(details, promiseOut) {
+    var json = promiseOut[0];
+    var l = promiseOut[1]; // dictionary
+
+    var s, x, y, top = document.createElement('div');
+
+    if (!json.id) {
+        top.appendChild(makeSpan('Unable to get achievement information', 'red'));
+        if (json.reason) {
+            top.appendChild(makeSpan(json.reason));
+        }
+        if (json.detail) {
+            top.appendChild(makeSpan(json.detail));
+        }
+        return top;
+    }
+
+    if (json.icon) {
+        var i = document.createElement('div');
+        i.className = 'icon';
+        i.style.backgroundImage = "url('" + IconPrefix + encodeURIComponent(json.icon) + ".jpg')";
+        top.appendChild(i);
+    }
+
+    top.appendChild(makeSpan(json.title, 'name'));
+
+    if (json.description) {
+        top.appendChild(document.createElement('br'));
+        top.appendChild(makeSpan(json.description));
+    }
+
+    var criteria = [];
+    if (json.criteria && json.criteria.length) {
+        criteria = json.criteria.filter(function(a){
+            return !!a.description;
+        });
+    }
+    if (criteria.length) {
+        top.appendChild(document.createElement('br'));
+
+        criteria.sort(function(a,b){
+            return a.orderIndex < b.orderIndex ? -1 : 1;
+        });
+
+        for (x = 0; x < criteria.length; x++) {
+            if (x % 2 == 0) {
+                s = makeSpan(criteria[x].description, 'q0');
+                top.appendChild(s);
+            } else {
+                s.appendChild(makeSpan(criteria[x].description, 'right'));
+            }
+        }
+    }
+
+    return top;
+}
 function buildItemTooltip(details, json) {
     var l = details.dictionary;
     var formatNum = formatNumber.bind(null, details.locale);

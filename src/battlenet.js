@@ -38,6 +38,10 @@ exports.GetSpecies = function(locale, id) {
     return APICall(locale, '/wow/pet/species/' + parseInt(id, 10));
 };
 
+exports.GetAchievement = function(locale, id) {
+    return APICall(locale, '/wow/achievement/' + parseInt(id, 10));
+};
+
 function APICall(locale, urlFragment) {
     if (!localeToDomain.hasOwnProperty(locale)) {
         locale = 'en_US';
