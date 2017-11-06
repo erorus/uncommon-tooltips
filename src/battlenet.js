@@ -63,6 +63,12 @@ function APICall(locale, urlFragment) {
         cache: 'force-cache',
         mode: 'cors',
     }).then(function(response){
+        if (!response.ok) {
+            console.warn('Uncommon Tooltips: Could not fetch ' + response.url + ' - error ' + response.status + ' ' + response.statusText);
+        }
         return apiCache[fullUrl] = response.json();
+    }).catch(function(response) {
+        console.warn('Uncommon Tooltips: could not fetch ' + fullUrl, response);
+        return {};
     });
 }

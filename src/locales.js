@@ -40,13 +40,18 @@ exports.getLocale = function(val) {
         cache: 'force-cache',
         mode: 'cors',
     }).then(function(response){
+        if (!response.ok) {
+            return Promise.reject(response.status + ' ' + response.statusText);
+        }
         return response.json().then(function(result) {
             return locales[loc] = result;
         }).catch(function(response) {
-            console.error('Uncommon Tooltips: Cannot parse locale json for ' + loc, response);
+            return Promise.reject('JSON error: ' + response);
         });
     }).catch(function(response){
-        console.error('Uncommon Tooltips: Cannot fetch locale ' + loc, response);
+        var err = 'Cannot fetch locale ' + loc;
+        console.error('Uncommon Tooltips: ' + err, response);
+        return Promise.reject(err + ': ' + response);
     });
 };
 

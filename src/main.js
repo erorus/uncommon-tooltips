@@ -160,6 +160,15 @@ function getLevelOffsetBonus(offset) {
     return false;
 }
 
+function handleLocaleError(err) {
+    var top = document.createElement('div');
+    top.appendChild(makeSpan('Cannot fetch required resources', 'red'));
+    if (err) {
+        top.appendChild(makeSpan(err));
+    }
+    return top;
+}
+
 function getItem(details) {
     var params = {};
     const RemoveBonusWithCurve = true;
@@ -247,21 +256,21 @@ function getItem(details) {
             }
             return buildItemTooltip(details, item);
         })
-    });
+    }).catch(handleLocaleError);
 }
 
 function getSpecies(details) {
     return Promise.all([
         BNet.GetSpecies(details.locale, details.id),
         Locales.getLocale(details.locale),
-        ]).then(buildSpeciesTooltip.bind(null, details));
+        ]).then(buildSpeciesTooltip.bind(null, details))
+        .catch(handleLocaleError);
 }
 
 function getAchievement(details) {
-    return Promise.all([
-        BNet.GetAchievement(details.locale, details.id),
-        Locales.getLocale(details.locale),
-    ]).then(buildAchievementTooltip.bind(null, details));
+    return BNet.GetAchievement(details.locale, details.id)
+        .then(buildAchievementTooltip.bind(null, details))
+        .catch(handleLocaleError);
 }
 
 function formatNumber(locale, num, decimals) {
@@ -322,8 +331,11 @@ function buildSpeciesTooltip(details, promiseOut) {
 }
 
 function buildAchievementTooltip(details, promiseOut) {
+    /*
     var json = promiseOut[0];
     var l = promiseOut[1]; // dictionary
+    */
+    var json = promiseOut;
 
     var s, x, y, top = document.createElement('div');
 
