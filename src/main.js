@@ -1,7 +1,7 @@
 const Package = require('../package.json');
-const BNet = require('./battlenet');
-const Tooltip = require('./tooltip');
 const GameData = require('./gamedata');
+const BNet = require('./battlenet')(GameData.patch);
+const Tooltip = require('./tooltip');
 const Locales = require('./locales');
 
 var IconPrefix = 'https://render-us.worldofwarcraft.com/icons/56/';

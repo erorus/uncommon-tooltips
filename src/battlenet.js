@@ -13,36 +13,41 @@ const localeToDomain = {
 
 var apiCache = {};
 
-exports.HasKey = function() {
-    return key != '';
-};
+module.exports = function(patch) {
+    var exp = {};
+    exp.HasKey = function() {
+        return key != '';
+    };
 
-exports.SetKey = function(k) {
-    key = k;
-};
+    exp.SetKey = function(k) {
+        key = k;
+    };
 
-exports.GetItem = function(locale, id, params) {
-    var url = '/wow/item/' + parseInt(id,10);
-    for (var k in params) {
-        if (!params.hasOwnProperty(k)) {
-            continue;
+    exp.GetItem = function(locale, id, params) {
+        var url = '/wow/item/' + parseInt(id,10);
+        for (var k in params) {
+            if (!params.hasOwnProperty(k)) {
+                continue;
+            }
+            url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
         }
-        url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
-    }
-    url = url.replace(/&/, '?'); // replace first &
+        url = url.replace(/&/, '?'); // replace first &
 
-    return APICall(locale, url);
+        return APICall(locale, url, patch);
+    };
+
+    exp.GetSpecies = function(locale, id) {
+        return APICall(locale, '/wow/pet/species/' + parseInt(id, 10), patch);
+    };
+
+    exp.GetAchievement = function(locale, id) {
+        return APICall(locale, '/wow/achievement/' + parseInt(id, 10), patch);
+    };
+
+    return exp;
 };
 
-exports.GetSpecies = function(locale, id) {
-    return APICall(locale, '/wow/pet/species/' + parseInt(id, 10));
-};
-
-exports.GetAchievement = function(locale, id) {
-    return APICall(locale, '/wow/achievement/' + parseInt(id, 10));
-};
-
-function APICall(locale, urlFragment) {
+function APICall(locale, urlFragment, patch) {
     if (!localeToDomain.hasOwnProperty(locale)) {
         locale = 'en_US';
     }
@@ -53,6 +58,10 @@ function APICall(locale, urlFragment) {
         + (urlFragment.indexOf('?') >= 0 ? '&' : '?')
         + 'locale=' + locale
         + '&apikey=' + key;
+
+    if (patch) {
+        fullUrl += '&cachepatch=' + encodeURIComponent(patch);
+    }
 
     if (apiCache.hasOwnProperty(fullUrl)) {
         return apiCache[fullUrl];
