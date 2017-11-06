@@ -5,6 +5,8 @@ const Tooltip = require('./tooltip');
 const Locales = require('./locales');
 
 var IconPrefix = 'https://render-us.worldofwarcraft.com/icons/56/';
+// https://blzmedia-a.akamaihd.net/wow/icons/56/
+// http://media.blizzard.com/wow/icons/56/
 
 const DomainToLocale = {
     'www': 'en_US',
