@@ -1,7 +1,7 @@
 var validLocales = ['en_US', 'de_DE', 'es_ES', 'fr_FR', 'it_IT', 'ko_KR', 'pt_BR', 'ru_RU'];
 var locales = {};
 
-var localesPrefix = 'locales/';
+var localesPrefix = 'https://js.uncommon-tooltips.com/';
 const localesVersion = 4;
 
 exports.getVersions = function() {
