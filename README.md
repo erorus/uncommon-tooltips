@@ -39,7 +39,7 @@ casc/
 
 ### 2. Fetch DB2 Parsing Library
 
-Run `git submodule update -- init` to fetch the erorus/DB2 submodule.
+Run `git submodule update --init` to fetch the erorus/DB2 submodule.
 
 ### 3. Parse Game Data
 
