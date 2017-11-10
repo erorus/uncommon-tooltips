@@ -53,7 +53,11 @@ Localized names from game data are saved as json files in out/locales. You can b
 
 `gamedata/locales.sh`
 
-### 5. Build Final Javascript
+### 5. Sanity Check
+
+`nodejs sanity.js` will run some checks against game data and localizations to make sure the data was extracted correctly.
+
+### 6. Build Final Javascript
 
 `npm install` to get JS dependencies, then  
 `npm run build` to build `uncommon-tooltips.js` in the `out/` dir.
