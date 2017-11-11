@@ -12,11 +12,11 @@ module.exports = {
                 'main': {
                     beforeContent:
 `/**
- * Uncommon Tooltips Beta v${PACKAGE.version}
+ * Uncommon Tooltips v${PACKAGE.version}
  * ${PACKAGE.description}
  * by ${PACKAGE.author}
  *
- * Not for 3rd-party use... yet
+ * https://www.uncommon-tooltips.com/
  */
 `
                 }
