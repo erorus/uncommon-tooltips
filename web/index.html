@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Uncommon Tooltips</title>
+    <meta name="viewport" content="width=700">
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Libre+Franklin:700" rel="stylesheet">
+    <style type="text/css">
+        body {
+            margin:4em auto;
+            max-width:40em;
+            color:#ccc;
+            background-color: #222;
+            padding:0 10px;
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        h1,h2,h3{line-height:1.2; letter-spacing: 1px;
+            font-family: 'Libre Franklin', sans-serif;
+            }
+        h1 { color: #1eff00 }
+        h2, h3 { color: #ffd100 }
+
+        .text { text-align: justify; margin: 0 1em }
+        abbr { text-decoration: none }
+        abbr::after { content: ' *'}
+        a { color: #fff; text-decoration: none; white-space: nowrap }
+        a::before { content: '[' }
+        a::after { content: ']' }
+        b { color: #fff; font-weight: normal }
+
+        div.tt { border: 1px solid #666; font-family: monospace; padding: 1em; text-align: left; font-size: 12px; white-space: pre-line }
+        ol { text-align: left }
+        ol > li { margin: 1em 0}
+
+        table.comparison {width:100%; border-spacing:0}
+        table.comparison a { color: #ccc }
+        table.comparison a::before, table.comparison a::after { content: '' }
+        .comparison td{border-top:1px solid #444; cursor: default}
+        .comparison td.yes, .comparison td.no { text-align: center; width: 20% }
+        .comparison td.yes a, .comparison td.no a { display: block }
+        .comparison td.yes.txt, .comparison td.no.txt { font-family: monospace; font-size: 75% }
+        .comparison td.small { font-size: 75% }
+        .comparison td.yes { background-color: #141}
+        .comparison td.no { background-color: #411}
+        .comparison td.some { background-color: #441}
+        .comparison tr.space { height: 2em }
+    </style>
+    <script src="https://js.uncommon-tooltips.com/uncommon-tooltips.js" onload="uncommonTooltips='sc7s6z2dn383kfebh6w96cxjbsh49d68';" async></script>
+    <script type="text/javascript" src="https://static-azeroth.cursecdn.com/current/js/syndication/tt.js"></script>
+    <script src="https://wow.zamimg.com/widgets/power.js"></script>
+</head>
+<body>
+    <h1>Uncommon Tooltips</h1>
+
+    <h2>Background</h2>
+    <div class="text">
+        So, you run a World of Warcraft fansite. You probably link to Wowhead for items and battle pets. And you probably use <a href="https://www.wowhead.com/tooltips">Wowhead's Tooltips</a>.<p>
+
+        However, maybe you're not happy with Wowhead's tooltips. You don't want to rely on ZAM to keep their site performant, and to keep the data accurate. Maybe you don't like the ads on Wowhead. Or, you might prefer to use official Blizzard data sources. For whatever reason, you want to try a new tooltip library. Maybe one you can host yourself.<p>
+    </div>
+
+    <h2>Another Option</h2>
+    <div class="text">
+        <b>Uncommon Tooltips</b> was built as an alternative World of Warcraft tooltip library for the Web. It gets data directly from Blizzard's <a href="https://dev.battle.net/">Battle.net API</a>, so it's performant, accurate, and up-to-date. The tooltips are designed to match the in-game appearance as much as possible, even using all the official in-game labels direct from the source.<p>
+    </div>
+
+    <h2>Drop-In Compatibility</h2>
+    <div class="text">
+        If you'd like to try <b>Uncommon Tooltips</b> on your site, but you already use Wowhead tooltips, you won't have to rewrite every link. The <b>Uncommon Tooltips</b> library supports Wowhead's link formats, so all you'd need to do to switch is remove the Wowhead script tag, and insert the Uncommon Tooltips tag.
+    </div>
+
+    <h2>Installing on Your Site</h2>
+    <div class="text">
+        Since <b>Uncommon Tooltips</b> uses the Battle.net API for data, you'll need to get an API key from them. Fortunately, it's easy and free to get one.<p>
+        <ol>
+        <li><a href="https://dev.battle.net/member/register">Register for an Battle.net API account</a> if you don't have one yet.</li>
+        <li><a href="https://dev.battle.net/login/login">Log in to the Battle.net API Developer Portal.</a></li>
+        <li>Click the "Applications" tab.</li>
+        <li>Click the "Create a New Application" link.</li>
+        <li>Fill out the form and describe your website.
+            <ul><li>You can mention "Uncommon Tooltips" in the "Describe what your application will do" if you want.</li>
+                <li>You can leave the "Register Callback URL" field blank.</li>
+            </ul></li>
+        <li>Once your application is registered, find it under the "Keys" or "Applications" tabs.</li>
+        <li>Copy the "Key" (<b>NOT</b> the "Secret") for your application to your clipboard. You'll use it to initialize the <b>Uncommon Tooltips</b> library.</li>
+        <li>In your site code, paste this tag on your page:
+            <div class="tt">&lt;script src="https://js.uncommon-tooltips.com/uncommon-tooltips.js" onload="uncommonTooltips='KEY';" async&gt;&lt;/script&gt;</div>
+        </li>
+        <li>Replace the <b>KEY</b> in the above tag with your key you copied in step 7.</li>
+        <li>Make sure you remove Wowhead's "power.js" script tag if you're already using it.</li>
+        </ol>
+    </div>
+
+    <h2>That sounds like a lot of work.</h2>
+    <div class="text">
+        It's certainly a lot easier to use <a href="https://www.wowhead.com/tooltips">Wowhead's tooltips</a> on your website. If you're not comfortable with editing HTML and all the steps above, you should probably stick with Wowhead, it's pretty epic. <b>Uncommon Tooltips</b> is offered only as an alternative for those seeking something different.
+    </div>
+
+    <h2>Self-Hosting Option</h2>
+    <div class="text">
+        We recommend that you link directly to the script, as in the above example, so your site will always get the latest data and functionality updates. However, if you're concerned about performance or privacy, you can host the script yourself.
+        <ol>
+            <li>Download <a href="https://js.uncommon-tooltips.com/uncommon-tooltips.js">the main script file</a> to save on your site.</li>
+            <li>Also download the localization json for all the languages you're using:<br>
+                <a href="https://js.uncommon-tooltips.com/enUS.json">English</a>
+                <a href="https://js.uncommon-tooltips.com/deDE.json">German</a>
+                <a href="https://js.uncommon-tooltips.com/esES.json">Spanish</a>
+                <a href="https://js.uncommon-tooltips.com/frFR.json">French</a>
+                <a href="https://js.uncommon-tooltips.com/itIT.json">Italian</a>
+                <a href="https://js.uncommon-tooltips.com/ptBR.json">Portuguese</a>
+                <a href="https://js.uncommon-tooltips.com/ruRU.json">Russian</a>
+                <a href="https://js.uncommon-tooltips.com/koKR.json">Korean</a>
+            </li>
+            <li>When you include the script, you'll need to tell the script where your locale files are saved. If, for example, all the files are in your /tooltips/ path, it would look like:
+                <div class="tt">&lt;script src="/tooltips/uncommon-tooltips.js" async&gt;&lt;/script&gt;
+                    &lt;script&gt;
+                    uncommonTooltips = {
+                    &nbsp;&nbsp;&nbsp;&nbsp;key: 'KEY',
+                    &nbsp;&nbsp;&nbsp;&nbsp;localesPrefix: '/tooltips/',
+                    };
+                    &lt;/script&gt;
+                </div>
+            </li>
+            <li>Icon images are pulled from Blizzard's CDN. If you prefer to use a different icon location, use the same structure as above, but include:
+                <div class="tt">iconsPrefix: '/icons/',</div>
+            </li>
+        </ol>
+    </div>
+
+    <h2>Feature Comparison</h2>
+    Hover over any cell to see the output from each library.<br><br>
+    <table class="comparison">
+        <tr><th>Tag Usage</th><th>Uncommon<br>Tooltips</th><th>Wowhead</th><th>WowDB</th></tr>
+        <tr><td><abbr title="<a href=&quot;http://www.wowhead.com/item=21877&quot;>">Wowhead Link Format</abbr></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=21877" rel="np">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=21877" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td><abbr title="<a rel=&quot;item=21877&quot;>">Wowhead Rel Format</abbr></td>
+            <td class="yes"><a rel="np item=21877">Yes</a></td>
+            <td class="yes"><a rel="nt item=21877">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td><abbr title="<a data-wowhead=&quot;item=21877&quot;>">Wowhead Data Format</abbr></td>
+            <td class="yes"><a data-wowhead="np item=21877">Yes</a></td>
+            <td class="yes"><a data-wowhead="nt item=21877">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td><abbr title="<a href=&quot;http://www.wowdb.com/items/21877&quot;>">WowDB Link Format</abbr></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/21877" data-disable-tip="true">Yes</a></td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowdb.com/items/21877" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td><abbr title="<span data-tooltip-href=&quot;http://www.wowdb.com/items/21877&quot;>">WowDB Data Format</abbr></td>
+            <td class="no">No</td>
+            <td class="no">No</td>
+            <td class="yes"><span data-tooltip-href="http://www.wowdb.com/items/21877" style="display: block">Yes</span></td>
+        </tr>
+        <tr><td>Tooltip Disable Flag</td>
+            <td class="yes txt">rel=&quot;nt&quot;</td>
+            <td class="yes txt">rel=&quot;np&quot;</td>
+            <td class="yes txt">data-disable-tip=&quot;true&quot;</td>
+        </tr>
+
+        <tr class="space"></tr>
+        <tr><th>Language</th><th>Uncommon<br>Tooltips</th><th>Wowhead</th><th>WowDB</th></tr>
+        <tr><td>English</td>
+            <td class="yes"><a rel="np item=118852&domain=www">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/118852" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>German</td>
+            <td class="yes"><a rel="np item=118852&domain=de">Yes</a></td>
+            <td class="yes"><a href="http://de.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>Spanish</td>
+            <td class="yes"><a rel="np item=118852&domain=es">Yes</a></td>
+            <td class="yes"><a href="http://es.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>French</td>
+            <td class="yes"><a rel="np item=118852&domain=fr">Yes</a></td>
+            <td class="yes"><a href="http://fr.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>Italian</td>
+            <td class="yes"><a rel="np item=118852&domain=it">Yes</a></td>
+            <td class="yes"><a href="http://it.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>Portuguese</td>
+            <td class="yes"><a rel="np item=118852&domain=pt">Yes</a></td>
+            <td class="yes"><a href="http://pt.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>Russian</td>
+            <td class="yes"><a rel="np item=118852&domain=ru">Yes</a></td>
+            <td class="yes"><a href="http://ru.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>Korean</td>
+            <td class="yes"><a rel="np item=118852&domain=ko">Yes</a></td>
+            <td class="yes"><a href="http://ko.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>Chinese</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://cn.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+        <tr><td>PTR</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://ptr.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://ptr.wowdb.com/items/118852" rel="nt">Yes</a></td>
+        </tr>
+
+        <tr class="space"></tr>
+        <tr><th>Entity</th><th>Uncommon<br>Tooltips</th><th>Wowhead</th><th>WowDB</th></tr>
+        <tr><td>Item</td>
+            <td class="yes"><a rel="np item=118852">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/118852" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Battle Pet</td>
+            <td class="yes"><a rel="np npc=16548">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/npc=16548" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/npcs/16548" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Achievement</td>
+            <td class="yes"><a rel="np achievement=2144">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/achievement=2144" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/achievements/2144" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Spell</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/spell=1064" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/spells/1064" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Quest</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/quest=27777" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/quests/27777" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Pet Ability</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/pet-ability=119" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/pet-abilities/119" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Affix</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/affix=15" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/affixes/15" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Currency</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/currency=515" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/currencies/515" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>NPC</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/npc=33642" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/npcs/33642" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Item Set</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/item-set=631" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/item-sets/631" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Object</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/object=194356" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/objects/194356" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Zone</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/zone=3523" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/zones/3523" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Event</td>
+            <td class="no">No</td>
+            <td class="yes"><a href="http://www.wowhead.com/event=559" rel="nt">Yes</a></td>
+            <td class="no">No</td>
+        </tr>
+
+        <tr class="space"></tr>
+        <tr><th>Item Support</th><th>Uncommon<br>Tooltips</th><th>Wowhead</th><th>WowDB</th></tr>
+
+        <tr><td><abbr title="&quot;Season 15&quot;">Descriptive Name</abbr></td>
+            <td class="yes"><a rel="np item=103413">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=103413" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/103413" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Item Level</td>
+            <td class="yes small some"><a rel="np item=27905">(Weapons &amp; Armor)</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=27905" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/27905" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Upgrade Level</td>
+            <td class="no"><a rel="np item=153255">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=153255&upgd=1" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/153255?upgradeNum=1" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Binds</td>
+            <td class="yes"><a rel="np item=127">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=127" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/127" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Binds to Battle.Net</td>
+            <td class="no"><a rel="np item=152740">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=152740" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/152740" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Begins a Quest</td>
+            <td class="no"><a rel="np item=139480">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=139480" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/139480" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Unique/Max Count</td>
+            <td class="yes"><a rel="np item=151923">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=151923" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/151923" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Max Stack</td>
+            <td class="no"><a rel="np item=21877">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=21877" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/21877" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Unique-Equipped</td>
+            <td class="no"><a rel="np item=25921">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=25921" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/25921" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Conjured Tag</td>
+            <td class="no"><a rel="np item=22018">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=22018" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/22018" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Toy Tag</td>
+            <td class="yes"><a rel="np item=130214">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=130214" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/130214" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Crafting Reagent Tag</td>
+            <td class="yes"><a rel="np item=21877">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=21877" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/21877" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Mount Tag</td>
+            <td class="yes"><a rel="np item=79771">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=79771" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/79771" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Mount Description</td>
+            <td class="no"><a rel="np item=79771">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=79771" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/79771" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Mount Source</td>
+            <td class="no"><a rel="np item=79771">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=79771" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/79771" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Bag Slots</td>
+            <td class="yes"><a rel="np item=23774">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=23774" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/23774" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Inventory Slot/Type</td>
+            <td class="yes"><a rel="np item=33965">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=33965" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/33965" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Gem Stats</td>
+            <td class="yes"><a rel="np item=76694">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=76694" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/76694" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Relic Stats</td>
+            <td class="yes some"><a rel="np item=133764">Some</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=133764" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/133764" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Weapon Damage</td>
+            <td class="yes"><a rel="np item=18876">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=18876" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/18876" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Weapon/Armor Stats</td>
+            <td class="yes"><a rel="np item=112589">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=112589" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/112589" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Classic Random Enchants</td>
+            <td class="yes"><a rel="np item=6545&rand=590">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=6545&rand=590" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/6545" rel="nt">No</a></td>
+        </tr>
+        <tr><td>BC Random Enchants</td>
+            <td class="yes"><a rel="np item=24912&rand=-40">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=24912&rand=-40" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/24912" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Random Enchants via Bonus</td>
+            <td class="yes"><a rel="np item=128900&bonus=689:1686">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=128900&bonus=689:1686" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/128900?bonusIDs=689,1686" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Bonuses</td>
+            <td class="yes"><a rel="np item=141423&bonus=41:1562:1808:3573">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=141423&bonus=41:1562:1808:3573" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/141423?bonusIDs=41,1562,1808,3573" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Scaling Bonuses</td>
+            <td class="yes"><a rel="np item=141566&bonus=43:3398&lvl=105">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=141566&bonus=43:3398&lvl=105" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/141566?bonusIDs=43,3398&level=105" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Heirloom Scaling</td>
+            <td class="no"><a rel="np item=48691&lvl=40">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=48691&lvl=40" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/48691?level=40" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Enchants</td>
+            <td class="yes"><a rel="np item=19364&ench=1900">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=19364&ench=1900" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/19364?enchantment=1900" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Socketed Gems</td>
+            <td class="yes"><a rel="np item=104831&gems=76628:0:76562">Yes</a></td>
+            <td class="yes some small"><a href="http://www.wowhead.com/item=104831&gems=76628:0:76562" rel="nt">With Errors</a></td>
+            <td class="yes some small"><a href="http://www.wowdb.com/items/104831?gems=76628,0,76562" rel="nt">Can't Skip Slots</a></td>
+        </tr>
+        <tr><td>Socket Bonus</td>
+            <td class="yes"><a rel="np item=32474&gems=32409:31865">Yes</a></td>
+            <td class="no some small"><a href="http://www.wowhead.com/item=32474&gems=32409:31865" rel="nt">Not Lit</a></td>
+            <td class="no small"><a href="http://www.wowdb.com/items/32474?gems=32409,31865" rel="nt">Wrong</a></td>
+        </tr>
+        <tr><td>Socketed Relics</td>
+            <td class="no some small"><a rel="np item=128938&bonus=732&gems=137339:136974:152292">Not really</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=128938&bonus=732&gems=137339:136974:152292&gem1bonus=1557:3337:3418&gem2bonus=1562:3528:3536&gem3bonus=1452:3528:3573&spec=268" rel="nt">Yes</a></td>
+            <td class="yes some small"><a href="http://www.wowdb.com/items/128938?bonusIDs=732&gems=137339,136974,152292" rel="nt">Without Bonuses</a></td>
+        </tr>
+        <tr><td>Spell On Use</td>
+            <td class="yes"><a rel="np item=109218">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=109218" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/109218" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Spell On Equip</td>
+            <td class="yes some small"><a rel="np item=19961">Mostly</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=19961" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/19961" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Spell On Proc</td>
+            <td class="yes some small"><a rel="np item=12794">Mostly</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=12794" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/12794" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Spell On Pickup</td>
+            <td class="yes"><a rel="np item=153290">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=153290" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/153290" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Learn Spell</td>
+            <td class="yes"><a rel="np item=49050">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=49050" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/49050" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Recipe Output</td>
+            <td class="no"><a rel="np item=35582">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=35582" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/35582" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Recipe Reagents</td>
+            <td class="no"><a rel="np item=25887">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=25887" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/25887" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Charges</td>
+            <td class="yes"><a rel="np item=46725">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=46725" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/46725" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Item Set Pieces</td>
+            <td class="yes"><a rel="np item=22512&pcs=22519:22514:22513:22512:22515">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=22512&pcs=22519:22514:22513:22512:22515" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/22512?setPieces=22519,22514,22513,22512,22515" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Durability</td>
+            <td class="yes"><a rel="np item=25392">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=25392" rel="nt">Yes</a></td>
+            <td class="no"><a href="http://www.wowdb.com/items/25392" rel="nt">No</a></td>
+        </tr>
+        <tr><td>Allowed Races</td>
+            <td class="yes"><a rel="np item=144391">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=144391" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/144391" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Allowed Classes</td>
+            <td class="yes"><a rel="np item=13968">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=13968" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/13968" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Required Level</td>
+            <td class="yes"><a rel="np item=152558">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=152558" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/152558" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Required Skill</td>
+            <td class="yes"><a rel="np item=44501">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=44501" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/44501" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Required Ability</td>
+            <td class="yes"><a rel="np item=23836">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=23836" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/23836" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Required Faction</td>
+            <td class="yes"><a rel="np item=44283">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=44283" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/44283" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Flavor Text</td>
+            <td class="yes"><a rel="np item=118852">Yes</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=118852" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/118852" rel="nt">Yes</a></td>
+        </tr>
+        <tr><td>Drop Info</td>
+            <td class="no"><a rel="np item=153255">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=153255" rel="nt">Yes</a></td>
+            <td class="no some small"><a href="http://www.wowdb.com/items/153255" rel="nt">Dungeon Journal</a></td>
+        </tr>
+        <tr><td>Sell Price</td>
+            <td class="no"><a rel="np item=21877">No</a></td>
+            <td class="yes"><a href="http://www.wowhead.com/item=21877" rel="nt">Yes</a></td>
+            <td class="yes"><a href="http://www.wowdb.com/items/21877" rel="nt">Yes</a></td>
+        </tr>
+    </table>
+
+    <h2>About the Author</h2>
+    <div class="text">
+        <b>Uncommon Tooltips</b> was created by Erorus, a former Wowhead developer who's also behind <a href="https://theunderminejournal.com/">The Undermine Journal</a>,
+        <a href="https://realmpop.com">Realm Pop</a>, <a href="https://wowtoken.info">WoW Token Info</a>, and <a href="https://does.theapi.work/">Does the API Work</a>.
+        You can view most of his projects on <a href="https://everynothing.net/">everynothing.net</a>.<p>
+
+        <b>Uncommon Tooltips</b> was made primarily to support <a href="https://theunderminejournal.com/">The Undermine Journal</a>, but it's also a neat experiment to see how far the Battle.net API can go.<p>
+
+        You can also check out <a href="https://github.com/erorus/uncommon-tooltips">the source code on Github</a>.
+    </div>
+
+</body>
+</html>
