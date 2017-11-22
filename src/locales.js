@@ -37,7 +37,7 @@ exports.getLocale = function(val) {
 
     return fetch(localesPrefix + loc.replace(/_/, '') + '.json?' + localesVersion, {
         credentials: 'omit',
-        cache: 'force-cache',
+        cache: 'default',
         mode: 'cors',
     }).then(function(response){
         if (!response.ok) {
