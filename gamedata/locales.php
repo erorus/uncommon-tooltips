@@ -253,15 +253,15 @@ function initSpellEffect($db2Path) {
         return false;
     }
 
-    $reader->setFieldsSigned([5 => true]);
+    $reader->setFieldsSigned([2 => true]);
 
     $reader->setFieldNames([
-        2 => 'spell',
-        3 => 'effecttypeid',
-        5 => 'amount',
-        6 => 'order',
-        16 => 'diesides',
-        17 => 'itemcreated',
+        29 => 'spell',
+        1 => 'effecttypeid',
+        2 => 'amount',
+        3 => 'order',
+        //11 => 'diesides',
+        //12 => 'itemcreated',
     ]);
 
     foreach ($reader->generateRecords() as $record) {
@@ -403,8 +403,8 @@ function getCharRaces($db2Path) {
         return false;
     }
     $reader->setFieldNames([
-        0 => 'flags',
-        5 => 'name',
+        6 => 'flags',
+        2 => 'name',
     ]);
 
     foreach ($reader->generateRecords() as $id => $record) {
@@ -456,7 +456,7 @@ function getFactions($db2Path) {
         return false;
     }
     $reader->setFieldNames([
-        4 => 'name',
+        1 => 'name',
         7 => 'order',
     ]);
 
@@ -523,8 +523,8 @@ function getItemEnchants($db2Path) {
         return false;
     }
     $reader->setFieldNames([
-        0 => 'spell',
-        1 => 'name',
+        0 => 'name',
+        1 => 'spell',
         2 => 'scalingPoints',
         5 => 'effectPoints',
         15 => 'maxLevel',

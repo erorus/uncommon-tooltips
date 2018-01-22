@@ -444,7 +444,7 @@ function main()
     failed |= !(ok = GameData.toys.indexOf(17716) >= 0);
     console.log('Toys:' + OkOut(ok));
 
-    failed |= !(ok = SameArray(GameData.randPropPoints[30][0], [19, 14, 11, 8, 6]));
+    failed |= !(ok = SameArray(GameData.randPropPoints[30][0], [11, 8, 6, 5, 3]));
     console.log('Random Prop Points:' + OkOut(ok));
 
     failed |= !(ok = SameArray(GameData.itemRandomProperties[247], [91, 95]));
@@ -488,11 +488,21 @@ function LocaleCheck(localeName, checks) {
         return false;
     }
 
-    var locJson = fs.readFileSync(path);
-    var loc = JSON.parse(locJson);
+    var loc, locJson = fs.readFileSync(path);
+    try {
+        loc = JSON.parse(locJson);
+    } catch (e) {
+        console.log('Locale ' + localeName + ' could not be parsed (bad)');
+        return false;
+    }
 
-    failed |= !(ok = loc.localeInfo.patch.substr(0,2) == '7.');
-    console.log('Locale ' + localeName + ' patch: ' + loc.localeInfo.patch + OkOut(ok));
+    if (!loc.localeInfo || !loc.localeInfo.patch) {
+        console.log('Locale ' + localeName + ' has no patch info (bad)');
+        failed = true;
+    } else {
+        failed |= !(ok = loc.localeInfo.patch.substr(0,2) == '7.');
+        console.log('Locale ' + localeName + ' patch: ' + loc.localeInfo.patch + OkOut(ok));
+    }
 
     for (var k1 in checks) {
         if (!checks.hasOwnProperty(k1)) {

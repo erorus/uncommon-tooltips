@@ -66,13 +66,13 @@ function main() {
     echo 'exports["scalingCurveMap"]=' . json_encode($a, $jsonFlags), ";\n";
 
     fwrite(STDERR, "Building NPC->Species Map...\n");
-    if (!($a = buildKeyValue($db2Path, 'BattlePetSpecies.db2', 0, -1))) {
+    if (!($a = buildKeyValue($db2Path, 'BattlePetSpecies.db2', 2, -1))) {
         return 1;
     }
     echo 'exports["speciesMap"]=', json_encode($a, $jsonFlags), ";\n";
 
     fwrite(STDERR, "Building Toy List...\n");
-    if (!($a = buildKeyValue($db2Path, 'Toy.db2', 0, 0))) {
+    if (!($a = buildKeyValue($db2Path, 'Toy.db2', 1, 0))) {
         return 1;
     }
     echo 'exports["toys"]=', json_encode(array_keys($a), $jsonFlags), ";\n";
@@ -120,8 +120,8 @@ function main() {
     fwrite(STDERR, "Building Item Enchantment...\n");
     $reader = new Reader($db2Path . 'SpellItemEnchantment.db2');
     $reader->setFieldNames([
-        0 => 'spell',
-        1 => 'name',
+        0 => 'name',
+        1 => 'spell',
         2 => 'scalingPoints',
         5 => 'effectPoints',
         12 => 'type',
@@ -147,7 +147,7 @@ function main() {
     $reader = new Reader($db2Path . 'ItemSparse.db2');
     $a = [];
     foreach ($reader->generateRecords() as $id => $record) {
-        if ($record[0][1] & 0x80000000) {
+        if ($record[6][1] & 0x80000000) {
             $a[$id] = $id;
         }
     }
