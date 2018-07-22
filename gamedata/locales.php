@@ -253,15 +253,15 @@ function initSpellEffect($db2Path) {
         return false;
     }
 
-    $reader->setFieldsSigned([2 => true]);
+    $reader->setFieldsSigned([4 => true]);
 
     $reader->setFieldNames([
-        29 => 'spell',
-        1 => 'effecttypeid',
-        2 => 'amount',
-        3 => 'order',
-        //11 => 'diesides',
-        //12 => 'itemcreated',
+        27 => 'spell',
+        2 => 'effecttypeid',
+        4 => 'amount',
+        1 => 'order',
+        //9 => 'diesides',
+        //10 => 'itemcreated',
     ]);
 
     foreach ($reader->generateRecords() as $record) {
@@ -348,8 +348,8 @@ function getInventorySubtype($db2Path) {
     $reader->setFieldNames([
         0 => 'name',
         1 => 'plural',
-        3 => 'class',
-        4 => 'subclass',
+        2 => 'class',
+        3 => 'subclass',
     ]);
 
     foreach ($reader->generateRecords() as $record) {
@@ -390,7 +390,7 @@ function getInventorySubtype($db2Path) {
 }
 
 function getCharClasses($db2Path) {
-    return genericNameLookup($db2Path, 'ChrClasses.db2', 1, 'classMap');
+    return genericNameLookup($db2Path, 'ChrClasses.db2', 0, 'classMap');
 }
 
 function getCharRaces($db2Path) {
@@ -403,7 +403,7 @@ function getCharRaces($db2Path) {
         return false;
     }
     $reader->setFieldNames([
-        6 => 'flags',
+        7 => 'flags',
         2 => 'name',
     ]);
 
@@ -457,11 +457,11 @@ function getFactions($db2Path) {
     }
     $reader->setFieldNames([
         1 => 'name',
-        7 => 'order',
+        4 => 'order',
     ]);
 
     foreach ($reader->generateRecords() as $id => $record) {
-        if ($record['order'] < 4000) {
+        if ($record['order'] < 1000) {
             $json[$id] = $record['name'];
         }
     }
@@ -505,7 +505,7 @@ function getItemEnchants($db2Path) {
 
                 return $amount;
             case 's':
-                return abs($SpellEffectBySpell[$m[1]][$m[3]-1]);
+                return abs($SpellEffectBySpell[$m[1]][$m[3]-1] ?? 0);
             default:
                 if (!isset($seen[$m[2]])) {
                     $seen[$m[2]] = $m[0];
@@ -524,13 +524,14 @@ function getItemEnchants($db2Path) {
     }
     $reader->setFieldNames([
         0 => 'name',
-        1 => 'spell',
-        2 => 'scalingPoints',
-        5 => 'effectPoints',
-        15 => 'maxLevel',
-        16 => 'scalingClass',
+        2 => 'spell',
+        3 => 'scalingPoints',
+        7 => 'effectPoints',
+        14 => 'type',
+        15 => 'scalingClass',
+        19 => 'maxLevel',
     ]);
-    $reader->setFieldsSigned([16 => true]);
+    $reader->setFieldsSigned([15 => true]);
     foreach ($reader->generateRecords() as $id => $record) {
         $json[$id] = preg_replace_callback('/\$(\d*)(\w)(\d)/', $formatCallback, $record['name']);
     }

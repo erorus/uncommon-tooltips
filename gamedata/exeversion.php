@@ -3,6 +3,10 @@
 // http://stackoverflow.com/questions/2029409/get-version-of-exe-via-php
 function GetExeVersion($FileName)
 {
+
+    // TODO
+    return [8,0,1,27144];
+
     $handle = fopen($FileName, 'rb');
     if (!$handle) {
         return false;

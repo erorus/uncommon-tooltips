@@ -47,9 +47,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Reinforced (+2 Armor)"
         },
-        "itemRandomSuffixMap": {
-            "8": "of the Whale"
-        },
         "itemRandomPropertiesMap": {
             "15": "of stamina"
         }
@@ -97,9 +94,6 @@ var localeChecks = {
         },
         "enchantMap": {
             "16": "Verstärkt (+2 Rüstung)"
-        },
-        "itemRandomSuffixMap": {
-            "8": "des Wals"
         },
         "itemRandomPropertiesMap": {
             "15": "der Ausdauer"
@@ -149,9 +143,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Reforzado (+2 armadura)"
         },
-        "itemRandomSuffixMap": {
-            "8": "de la ballena"
-        },
         "itemRandomPropertiesMap": {
             "15": "de aguante"
         }
@@ -198,10 +189,7 @@ var localeChecks = {
             "54": "Gnomeregan"
         },
         "enchantMap": {
-            "16": "Renforcé (+2 à l’armure)"
-        },
-        "itemRandomSuffixMap": {
-            "8": "de la baleine"
+            "16": "Renforcé (+2 à l’Armure)"
         },
         "itemRandomPropertiesMap": {
             "15": "d'Endurance"
@@ -251,9 +239,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Rinforzato (+2 Armatura)"
         },
-        "itemRandomSuffixMap": {
-            "8": "della Balena"
-        },
         "itemRandomPropertiesMap": {
             "15": "della Tempra"
         }
@@ -301,9 +286,6 @@ var localeChecks = {
         },
         "enchantMap": {
             "16": "방어도 보강 (방어도 +2)"
-        },
-        "itemRandomSuffixMap": {
-            "8": "고래의"
         },
         "itemRandomPropertiesMap": {
             "15": "체력의"
@@ -353,9 +335,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Reforçado (+2 de Armadura)"
         },
-        "itemRandomSuffixMap": {
-            "8": "da Baleia"
-        },
         "itemRandomPropertiesMap": {
             "15": "do Vigor"
         }
@@ -404,9 +383,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Доспех усилен (+2 к броне)"
         },
-        "itemRandomSuffixMap": {
-            "8": "со знаком кита"
-        },
         "itemRandomPropertiesMap": {
             "15": "с печатью выносливости"
         }
@@ -429,13 +405,13 @@ function main()
     var failed = false;
     var ok;
 
-    failed |= !(ok = GameData.patch.substr(0, 2) == '7.');
+    failed |= !(ok = GameData.patch.substr(0, 2) == '8.');
     console.log('Patch: ' + GameData.patch + OkOut(ok));
 
     failed |= !(ok = GameData.scalingBonusMap['615'] == 2794);
     console.log('Scaling Bonus Map:' + OkOut(ok));
 
-    failed |= !(ok = SameArray(GameData.scalingCurveMap['1558'][0], [98, 660]));
+    failed |= !(ok = SameArray(GameData.scalingCurveMap['1558'][0], [98, 138]));
     console.log('Scaling Curve Map:' + OkOut(ok));
 
     failed |= !(ok = GameData.speciesMap['2671'] == 39);
@@ -444,16 +420,16 @@ function main()
     failed |= !(ok = GameData.toys.indexOf(17716) >= 0);
     console.log('Toys:' + OkOut(ok));
 
-    failed |= !(ok = SameArray(GameData.randPropPoints[30][0], [11, 8, 6, 5, 3]));
+    failed |= !(ok = SameArray(GameData.randPropPoints[30][0], [15, 11, 9, 8, 8]));
     console.log('Random Prop Points:' + OkOut(ok));
 
     failed |= !(ok = SameArray(GameData.itemRandomProperties[247], [91, 95]));
     console.log('Item Random Properties:' + OkOut(ok));
 
-    failed |= !(ok = GameData.itemRandomSuffix['43']['2805'] == 5259);
-    console.log('Item Random Suffix:' + OkOut(ok));
+    //failed |= !(ok = GameData.itemRandomSuffix['43']['2805'] == 5259);
+    //console.log('Item Random Suffix:' + OkOut(ok));
 
-    failed |= !(ok = SameArray(GameData.itemEnchants[188][0], [3, 7590, 0]));
+    failed |= !(ok = SameArray(GameData.itemEnchants[1048][0], [5,4,21]));
     console.log('Item Enchants:' + OkOut(ok));
 
     failed |= !(ok = GameData.craftingReagents.indexOf(7075) >= 0);
@@ -500,7 +476,7 @@ function LocaleCheck(localeName, checks) {
         console.log('Locale ' + localeName + ' has no patch info (bad)');
         failed = true;
     } else {
-        failed |= !(ok = loc.localeInfo.patch.substr(0,2) == '7.');
+        failed |= !(ok = loc.localeInfo.patch.substr(0,2) == '8.');
         console.log('Locale ' + localeName + ' patch: ' + loc.localeInfo.patch + OkOut(ok));
     }
 

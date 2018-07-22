@@ -66,13 +66,13 @@ function main() {
     echo 'exports["scalingCurveMap"]=' . json_encode($a, $jsonFlags), ";\n";
 
     fwrite(STDERR, "Building NPC->Species Map...\n");
-    if (!($a = buildKeyValue($db2Path, 'BattlePetSpecies.db2', 2, -1))) {
+    if (!($a = buildKeyValue($db2Path, 'BattlePetSpecies.db2', 3, -1))) {
         return 1;
     }
     echo 'exports["speciesMap"]=', json_encode($a, $jsonFlags), ";\n";
 
     fwrite(STDERR, "Building Toy List...\n");
-    if (!($a = buildKeyValue($db2Path, 'Toy.db2', 1, 0))) {
+    if (!($a = buildKeyValue($db2Path, 'Toy.db2', 2, 0))) {
         return 1;
     }
     echo 'exports["toys"]=', json_encode(array_keys($a), $jsonFlags), ";\n";
@@ -81,6 +81,7 @@ function main() {
     $reader = new Reader($db2Path . 'RandPropPoints.db2');
     $a = [[]];
     foreach ($reader->generateRecords() as $id => $record) {
+        array_shift($record); // remove first column
         $a[$id] = $record;
     }
     ksort($a);
@@ -121,12 +122,12 @@ function main() {
     $reader = new Reader($db2Path . 'SpellItemEnchantment.db2');
     $reader->setFieldNames([
         0 => 'name',
-        1 => 'spell',
-        2 => 'scalingPoints',
-        5 => 'effectPoints',
-        12 => 'type',
-        15 => 'maxLevel',
-        16 => 'scalingClass',
+        2 => 'spell',
+        3 => 'scalingPoints',
+        7 => 'effectPoints',
+        14 => 'type',
+        15 => 'scalingClass',
+        19 => 'maxLevel',
     ]);
     $a = [];
     foreach ($reader->generateRecords() as $id => $record) {
@@ -147,7 +148,7 @@ function main() {
     $reader = new Reader($db2Path . 'ItemSparse.db2');
     $a = [];
     foreach ($reader->generateRecords() as $id => $record) {
-        if ($record[6][1] & 0x80000000) {
+        if ($record[21][1] & 0x80000000) {
             $a[$id] = $id;
         }
     }
