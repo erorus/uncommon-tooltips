@@ -7,26 +7,6 @@ use \Erorus\DB2\Reader;
 
 date_default_timezone_set('UTC');
 
-$SkillIds = [
-    171, // Alchemy
-    164, // Blacksmithing
-    333, // Enchanting
-    202, // Engineering
-    182, // Herbalism
-    165, // Leatherworking
-    186, // Mining
-    393, // Skinning
-    197, // Tailoring
-    755, // Jewelcrafting
-    773, // Inscription
-
-    794, // Archaeology
-    185, // Cooking
-    129, // First Aid
-    356, // Fishing
-    762, // Riding
-];
-
 $GlobalStringsTemplate = [
     'itemLevel' => 'ITEM_LEVEL', // Item Level %d
 
@@ -419,8 +399,6 @@ function getCharRaces($db2Path) {
 }
 
 function getSkills($db2Path) {
-    global $SkillIds;
-
     $json = [];
 
     try {
@@ -433,12 +411,8 @@ function getSkills($db2Path) {
         0 => 'name',
     ]);
 
-    foreach ($SkillIds as $id) {
-        if ($record = $reader->getRecord($id)) {
-            $json[$id] = $record['name'];
-        } else {
-            $json[$id] = "Skill $id";
-        }
+    foreach ($reader->generateRecords() as $id => $record) {
+        $json[$id] = $record['name'];
     }
 
     ksort($json);

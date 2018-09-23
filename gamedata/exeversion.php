@@ -5,7 +5,7 @@ function GetExeVersion($FileName)
 {
 
     // TODO
-    return [8,0,1,27144];
+    return [8,0,1,27843];
 
     $handle = fopen($FileName, 'rb');
     if (!$handle) {
