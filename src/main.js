@@ -601,16 +601,18 @@ function buildItemTooltip(details, json) {
     if (json.itemSpells) {
         var spellText = '';
         for (x in json.itemSpells) {
-            if (!json.itemSpells.hasOwnProperty(x) || !json.itemSpells[x].spell) {
+            if (!json.itemSpells.hasOwnProperty(x) || !json.itemSpells[x]) {
                 continue;
             }
             if (json.itemSpells[x].trigger == 'ON_LEARN') {
                 continue;
             }
-
-            if (!json.itemSpells[x].spell.description) {
+            if (!json.itemSpells[x].description && json.itemSpells[x].scaledDescription) {
+                json.itemSpells[x].description = json.itemSpells[x].scaledDescription;
+            }
+            if (!json.itemSpells[x].description) {
                 if (json.itemSpells[x].trigger == 'ON_USE' && json.description) {
-                    json.itemSpells[x].spell.description = json.description;
+                    json.itemSpells[x].description = json.description;
                     json.description = '';
                 } else {
                     continue;
@@ -619,7 +621,7 @@ function buildItemTooltip(details, json) {
 
             spellText = '';
             spellText += (l.spellTriggerMap.hasOwnProperty(json.itemSpells[x].trigger) ? l.spellTriggerMap[json.itemSpells[x].trigger] : (json.itemSpells[x].trigger + ':')) + ' ';
-            spellText += json.itemSpells[x].spell.description.replace(/\^(\d+(?:[\.,]\d+)?)/g, '#'); /*function(full, p1){
+            spellText += json.itemSpells[x].description.replace(/\^(\d+(?:[\.,]\d+)?)/g, '#'); /*function(full, p1){
                 return Math.round(parseFloat(p1) * getRandomPropPoints(json.itemLevel, json.quality, json.inventoryType, json.itemSubClass));
             });*/
 
