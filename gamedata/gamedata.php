@@ -22,8 +22,7 @@ function main() {
 
     $wowPath = $db2Path . '../Wow.exe';
     if (file_exists($wowPath) && ($version = GetExeVersion($wowPath))) {
-        ksort($version);
-        echo 'exports["patch"]=' , json_encode(implode('.', array_values($version))), ";\n";
+        echo 'exports["patch"]=' , json_encode($version), ";\n";
     }
 
     fwrite(STDERR, "Finding scaling bonuses...\n");

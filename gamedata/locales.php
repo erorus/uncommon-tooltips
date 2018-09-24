@@ -192,8 +192,7 @@ function main() {
 
     $wowPath = $db2Path . '../Wow.exe';
     if (file_exists($wowPath) && ($version = GetExeVersion($wowPath))) {
-        ksort($version);
-        $json['localeInfo']['patch'] = implode('.', array_values($version));
+        $json['localeInfo']['patch'] = $version;
     }
 
     $parts = [
