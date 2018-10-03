@@ -46,21 +46,14 @@
         .comparison td.some { background-color: #441}
         .comparison tr.space { height: 2em }
     </style>
-    <script src="https://js.uncommon-tooltips.com/uncommon-tooltips.js" onload="uncommonTooltips='sc7s6z2dn383kfebh6w96cxjbsh49d68';" async></script>
+    <script src="https://js.uncommon-tooltips.com/uncommon-tooltips.js" async></script>
     <script type="text/javascript" src="https://static-azeroth.cursecdn.com/current/js/syndication/tt.js"></script>
     <script src="https://wow.zamimg.com/widgets/power.js"></script>
 </head>
 <body>
     <h1>Uncommon Tooltips</h1>
 
-    <h2>Background</h2>
-    <div class="text">
-        So, you run a World of Warcraft fansite. You probably link to Wowhead for items and battle pets. And you probably use <a href="https://www.wowhead.com/tooltips">Wowhead's Tooltips</a>.<p>
-
-        However, maybe you're not happy with Wowhead's tooltips. You don't want to rely on ZAM to keep their site performant, and to keep the data accurate. Maybe you don't like the ads on Wowhead. Or, you might prefer to use official Blizzard data sources. For whatever reason, you want to try a new tooltip library. Maybe one you can host yourself.<p>
-    </div>
-
-    <h2>Another Option</h2>
+    <h2>What This Does</h2>
     <div class="text">
         <b>Uncommon Tooltips</b> was built as an alternative World of Warcraft tooltip library for the Web. It gets data directly from Blizzard's <a href="https://dev.battle.net/">Battle.net API</a>, so it's performant, accurate, and up-to-date. The tooltips are designed to match the in-game appearance as much as possible, even using all the official in-game labels direct from the source.<p>
     </div>
@@ -72,59 +65,11 @@
 
     <h2>Installing on Your Site</h2>
     <div class="text">
-        Since <b>Uncommon Tooltips</b> uses the Battle.net API for data, you'll need to get an API key from them. Fortunately, it's easy and free to get one.<p>
         <ol>
-        <li><a href="https://dev.battle.net/member/register">Register for an Battle.net API account</a> if you don't have one yet.</li>
-        <li><a href="https://dev.battle.net/login/login">Log in to the Battle.net API Developer Portal.</a></li>
-        <li>Click the "Applications" tab.</li>
-        <li>Click the "Create a New Application" link.</li>
-        <li>Fill out the form and describe your website.
-            <ul><li>You can mention "Uncommon Tooltips" in the "Describe what your application will do" if you want.</li>
-                <li>You can leave the "Register Callback URL" field blank.</li>
-            </ul></li>
-        <li>Once your application is registered, find it under the "Keys" or "Applications" tabs.</li>
-        <li>Copy the "Key" (<b>NOT</b> the "Secret") for your application to your clipboard. You'll use it to initialize the <b>Uncommon Tooltips</b> library.</li>
         <li>In your site code, paste this tag on your page:
-            <div class="tt">&lt;script src="https://js.uncommon-tooltips.com/uncommon-tooltips.js" onload="uncommonTooltips='KEY';" async&gt;&lt;/script&gt;</div>
+            <div class="tt">&lt;script src="https://js.uncommon-tooltips.com/uncommon-tooltips.js" async&gt;&lt;/script&gt;</div>
         </li>
-        <li>Replace the <b>KEY</b> in the above tag with your key you copied in step 7.</li>
         <li>Make sure you remove Wowhead's "power.js" script tag if you're already using it.</li>
-        </ol>
-    </div>
-
-    <h2>That sounds like a lot of work.</h2>
-    <div class="text">
-        It's certainly a lot easier to use <a href="https://www.wowhead.com/tooltips">Wowhead's tooltips</a> on your website. If you're not comfortable with editing HTML and all the steps above, you should probably stick with Wowhead, it's pretty epic. <b>Uncommon Tooltips</b> is offered only as an alternative for those seeking something different.
-    </div>
-
-    <h2>Self-Hosting Option</h2>
-    <div class="text">
-        We recommend that you link directly to the script, as in the above example, so your site will always get the latest data and functionality updates. However, if you're concerned about performance or privacy, you can host the script yourself.
-        <ol>
-            <li>Download <a href="https://js.uncommon-tooltips.com/uncommon-tooltips.js">the main script file</a> to save on your site.</li>
-            <li>Also download the localization json for all the languages you're using:<br>
-                <a href="https://js.uncommon-tooltips.com/enUS.json">English</a>
-                <a href="https://js.uncommon-tooltips.com/deDE.json">German</a>
-                <a href="https://js.uncommon-tooltips.com/esES.json">Spanish</a>
-                <a href="https://js.uncommon-tooltips.com/frFR.json">French</a>
-                <a href="https://js.uncommon-tooltips.com/itIT.json">Italian</a>
-                <a href="https://js.uncommon-tooltips.com/ptBR.json">Portuguese</a>
-                <a href="https://js.uncommon-tooltips.com/ruRU.json">Russian</a>
-                <a href="https://js.uncommon-tooltips.com/koKR.json">Korean</a>
-            </li>
-            <li>When you include the script, you'll need to tell the script where your locale files are saved. If, for example, all the files are in your /tooltips/ path, it would look like:
-                <div class="tt">&lt;script src="/tooltips/uncommon-tooltips.js" async&gt;&lt;/script&gt;
-                    &lt;script&gt;
-                    uncommonTooltips = {
-                    &nbsp;&nbsp;&nbsp;&nbsp;key: 'KEY',
-                    &nbsp;&nbsp;&nbsp;&nbsp;localesPrefix: '/tooltips/',
-                    };
-                    &lt;/script&gt;
-                </div>
-            </li>
-            <li>Icon images are pulled from Blizzard's CDN. If you prefer to use a different icon location, use the same structure as above, but include:
-                <div class="tt">iconsPrefix: '/icons/',</div>
-            </li>
         </ol>
     </div>
 
@@ -541,7 +486,7 @@
 
     <h2>About the Author</h2>
     <div class="text">
-        <b>Uncommon Tooltips</b> was created by Erorus, a former Wowhead developer who's also behind <a href="https://theunderminejournal.com/">The Undermine Journal</a>,
+        <b>Uncommon Tooltips</b> was created by Erorus, a developer who's also behind <a href="https://theunderminejournal.com/">The Undermine Journal</a>,
         <a href="https://realmpop.com">Realm Pop</a>, <a href="https://wowtoken.info">WoW Token Info</a>, and <a href="https://does.theapi.work/">Does the API Work</a>.
         You can view most of his projects on <a href="https://everynothing.net/">everynothing.net</a>.<p>
 
