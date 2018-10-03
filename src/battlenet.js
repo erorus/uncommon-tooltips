@@ -1,4 +1,7 @@
-var key = '';
+var token = '';
+var tokenFetchTries = 0;
+
+const TOKEN_URL = 'https://js.uncommon-tooltips.com/token.txt';
 
 const localeToDomain = {
     'en_US': 'us',
@@ -15,13 +18,6 @@ var apiCache = {};
 
 module.exports = function(patch) {
     var exp = {};
-    exp.HasKey = function() {
-        return key != '';
-    };
-
-    exp.SetKey = function(k) {
-        key = k;
-    };
 
     exp.GetItem = function(locale, id, params) {
         var url = '/wow/item/' + parseInt(id,10);
@@ -44,6 +40,8 @@ module.exports = function(patch) {
         return APICall(locale, '/wow/achievement/' + parseInt(id, 10), patch);
     };
 
+    FetchToken();
+
     return exp;
 };
 
@@ -53,11 +51,11 @@ function APICall(locale, urlFragment, patch) {
     }
     var domain = localeToDomain[locale];
 
-    var fullUrl = 'https://' + domain + '.api.battle.net'
+    var fullUrl = 'https://' + domain + '.api.blizzard.com'
         + urlFragment
         + (urlFragment.indexOf('?') >= 0 ? '&' : '?')
         + 'locale=' + locale
-        + '&apikey=' + key;
+        + '&access_token=' + token;
 
     if (patch) {
         fullUrl += '&cachepatch=' + encodeURIComponent(patch);
@@ -79,5 +77,28 @@ function APICall(locale, urlFragment, patch) {
     }).catch(function(response) {
         console.warn('Uncommon Tooltips: could not fetch ' + fullUrl, response);
         return {};
+    });
+}
+
+function FetchToken() {
+    fetch(TOKEN_URL, {
+        credentials: 'omit',
+        cache: 'force-cache',
+        mode: 'cors',
+    }).then(function(response){
+        if (!response.ok) {
+            console.warn('Uncommon Tooltips: could not fetch access token - error ' + response.status + ' ' + response.statusText);
+            if (tokenFetchTries < 10) {
+                window.setTimeout(FetchToken, 3000 + (tokenFetchTries++ * 10 * 1000));
+            }
+        } else {
+            response.text().then(function(text) {
+                token = text.trim();
+            });
+            tokenFetchTries = 0;
+            window.setTimeout(FetchToken, 6 * 60 * 60 * 1000);
+        }
+    }).catch(function(response) {
+        console.warn('Uncommon Tooltips: could not fetch access token', response);
     });
 }

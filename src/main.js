@@ -95,10 +95,6 @@ Tooltip.setLinkResolver(function(a) {
     if (!details.type) {
         return false;
     }
-    if (!BNet.HasKey()) {
-        console.error('Uncommon Tooltips: No Battle.net was supplied. Tooltips disabled.');
-        return false;
-    }
 
     if (!isWowDB) {
         paramWalk.call(details, rel);
@@ -1034,7 +1030,6 @@ function makeSpan(txt, cls) {
 
 (function() {
     var env = {
-        'key': '',
         'localesPrefix': Locales.getLocalePrefix(),
         'iconsPrefix': IconPrefix,
     };
@@ -1075,9 +1070,6 @@ function makeSpan(txt, cls) {
                         if (!env.hasOwnProperty(k)) {
                             continue;
                         }
-                        if (k == 'key') {
-                            continue;
-                        }
                         Object.defineProperty(o, k, {
                             get: subGet.bind(env, k),
                             set: subSet.bind(env, k),
@@ -1094,9 +1086,6 @@ function makeSpan(txt, cls) {
                 set: function (value)
                 {
                     switch (typeof value) {
-                        case 'string':
-                            env.key = value;
-                            break;
                         case 'object':
                             for (var k in value) {
                                 if (!value.hasOwnProperty(k) || !env.hasOwnProperty(k)) {
@@ -1120,9 +1109,6 @@ function makeSpan(txt, cls) {
 
     function readEnvironment()
     {
-        if (env.hasOwnProperty('key')) {
-            BNet.SetKey(env.key);
-        }
         if (env.hasOwnProperty('localesPrefix')) {
             Locales.setLocalePrefix(env.localesPrefix);
         }

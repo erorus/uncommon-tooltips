@@ -1,6 +1,6 @@
 {
   "name": "uncommon-tooltips",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "World of Warcraft tooltip library using Battle.net API",
   "scripts": {
     "build": "webpack --progress -p",
