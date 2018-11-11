@@ -17,6 +17,7 @@ const DomainToLocale = {
     'pt': 'pt_BR',
     'ru': 'ru_RU',
     'ko': 'ko_KR',
+    'tw': 'zh_TW',
 };
 
 const AcceptableTypes = ['item','npc','achievement'];

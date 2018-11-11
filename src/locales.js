@@ -1,4 +1,4 @@
-var validLocales = ['en_US', 'de_DE', 'es_ES', 'fr_FR', 'it_IT', 'ko_KR', 'pt_BR', 'ru_RU'];
+var validLocales = ['en_US', 'de_DE', 'es_ES', 'fr_FR', 'it_IT', 'ko_KR', 'pt_BR', 'ru_RU', 'zh_TW'];
 var locales = {};
 
 var localesPrefix = 'https://js.uncommon-tooltips.com/';

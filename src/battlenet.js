@@ -12,6 +12,7 @@ const localeToDomain = {
     'pt_BR': 'us',
     'ru_RU': 'eu',
     'ko_KR': 'kr',
+    'zh_TW': 'tw',
 };
 
 var apiCache = {};
