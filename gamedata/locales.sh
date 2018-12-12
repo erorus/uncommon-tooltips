@@ -7,5 +7,6 @@ if [ "$locales" == "" ]; then
 fi
 for locale in $locales; do
     echo "Generating $locale"
-    php locales.php casc/$locale/DBFilesClient > ../out/locales/$locale.json
+    php locales.php casc/$locale/DBFilesClient > ../out/locales/$locale.json &
 done
+wait
