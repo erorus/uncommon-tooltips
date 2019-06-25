@@ -445,11 +445,13 @@ function getFactions($db2Path) {
 }
 
 function getItemRandomSuffix($db2Path) {
-    return genericNameLookup($db2Path, 'ItemRandomSuffix.db2', 0, 'itemRandomSuffixMap');
+    //return genericNameLookup($db2Path, 'ItemRandomSuffix.db2', 0, 'itemRandomSuffixMap');
+    return ['itemRandomSuffixMap' => []];
 }
 
 function getItemRandomProperties($db2Path) {
-    return genericNameLookup($db2Path, 'ItemRandomProperties.db2', 0, 'itemRandomPropertiesMap');
+    //return genericNameLookup($db2Path, 'ItemRandomProperties.db2', 0, 'itemRandomPropertiesMap');
+    return ['itemRandomPropertiesMap' => []];
 }
 
 function getItemEnchants($db2Path) {

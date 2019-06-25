@@ -80,12 +80,13 @@ function main() {
     $reader = new Reader($db2Path . 'RandPropPoints.db2');
     $a = [[]];
     foreach ($reader->generateRecords() as $id => $record) {
-        array_shift($record); // remove first column
+        while (!is_array($record[0])) array_shift($record); // remove first 2 columns
         $a[$id] = $record;
     }
     ksort($a);
     echo 'exports["randPropPoints"]=', json_encode($a, $jsonFlags), ";\n";
 
+    /*
     fwrite(STDERR, "Building Item Random Properties...\n");
     $reader = new Reader($db2Path . 'ItemRandomProperties.db2');
     $a = [];
@@ -94,7 +95,10 @@ function main() {
     }
     ksort($a);
     echo 'exports["itemRandomProperties"]=', json_encode($a, $jsonFlags), ";\n";
+    */
+    echo 'exports["itemRandomProperties"]=', json_encode([], $jsonFlags), ";\n";
 
+    /*
     fwrite(STDERR, "Building Item Random Suffix...\n");
     $reader = new Reader($db2Path . 'ItemRandomSuffix.db2');
     $reader->setFieldNames([
@@ -116,6 +120,8 @@ function main() {
     }
     ksort($a);
     echo 'exports["itemRandomSuffix"]=', json_encode($a, $jsonFlags), ";\n";
+    */
+    echo 'exports["itemRandomSuffix"]=', json_encode([], $jsonFlags), ";\n";
 
     fwrite(STDERR, "Building Item Enchantment...\n");
     $reader = new Reader($db2Path . 'SpellItemEnchantment.db2');

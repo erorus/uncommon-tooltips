@@ -47,9 +47,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Reinforced (+2 Armor)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "of stamina"
-        }
     },
     "deDE": {
         "charges": "%d |4Aufladung:Aufladungen;",
@@ -95,9 +92,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Verstärkt (+2 Rüstung)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "der Ausdauer"
-        }
     },
     "esES": {
         "charges": "%d |4carga:cargas;",
@@ -143,9 +137,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Reforzado (+2 armadura)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "de aguante"
-        }
     },
     "frFR": {
         "charges": "%d |4charge:charges;",
@@ -191,9 +182,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Renforcé (+2 à l’Armure)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "d'Endurance"
-        }
     },
     "itIT": {
         "charges": "%d |4carica:cariche;",
@@ -239,9 +227,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Rinforzato (+2 Armatura)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "della Tempra"
-        }
     },
     "koKR": {
         "charges": "%d회 사용 가능",
@@ -287,9 +272,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "방어도 보강 (방어도 +2)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "체력의"
-        }
     },
     "ptBR": {
         "charges": "%d |4carga:cargas;",
@@ -335,9 +317,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Reforçado (+2 de Armadura)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "do Vigor"
-        }
     },
     "ruRU": {
         "charges": "%d |4заряд:заряда:зарядов;",
@@ -383,9 +362,6 @@ var localeChecks = {
         "enchantMap": {
             "16": "Доспех усилен (+2 к броне)"
         },
-        "itemRandomPropertiesMap": {
-            "15": "с печатью выносливости"
-        }
     }
 };
 
@@ -423,8 +399,8 @@ function main()
     failed |= !(ok = SameArray(GameData.randPropPoints[30][0], [15, 11, 9, 8, 8]));
     console.log('Random Prop Points:' + OkOut(ok));
 
-    failed |= !(ok = SameArray(GameData.itemRandomProperties[247], [91, 95]));
-    console.log('Item Random Properties:' + OkOut(ok));
+    //failed |= !(ok = SameArray(GameData.itemRandomProperties[247], [91, 95]));
+    //console.log('Item Random Properties:' + OkOut(ok));
 
     //failed |= !(ok = GameData.itemRandomSuffix['43']['2805'] == 5259);
     //console.log('Item Random Suffix:' + OkOut(ok));
